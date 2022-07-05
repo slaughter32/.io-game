@@ -43,6 +43,7 @@ let d = false;
 let height = window.innerHeight;
 let width = window.innerWidth;
 console.log(`center: ${x}, ${y}`);
+gotInput();//run this once at the start to show that the player is not moving (prevents moving without player input on start)
 function onKeyDown(event){
   if (event.key === 'd'){
     d = true;
@@ -102,6 +103,13 @@ function gotInput(){
   handleInput(x, y);
 }
 
+function Dash(event){
+  if (event.keyCode == 32){
+    //teleport player forward and start a dash cooldown which is removed on fireball hit or 4 seconds.
+    console.log("Dash!");
+  }
+}
+
 function handleInput(x, y) {
   const dir = Math.atan2(x - window.innerWidth / 2, window.innerHeight / 2 - y);
   updateDirection(dir, speed);
@@ -117,6 +125,7 @@ export function startCapturingInput(){
     window.addEventListener('keydown', onKeyDown);
     window.addEventListener('keyup', onKeyUp);
     window.addEventListener('click', onMouseClick);
+    window.addEventListener('keypress', Dash);
     //window.addEventListener('keydown', onKeyInput);
 }
 export function stopCapturingInput(){
@@ -124,6 +133,7 @@ export function stopCapturingInput(){
     window.removeEventListener('keydown', onKeyDown);
     window.removeEventListener('keyup', onKeyUp);
     window.removeEventListener('click', onMouseClick);
+    window.removeEventListener('keypress', Dash);
     //window.removeEventListener('keydown', onKeyInput);
 }
 

@@ -18,17 +18,14 @@ const playButton = document.getElementById('play-button');
 const usernameInput = document.getElementById('username-input');
 
 
-console.log("The EntryPoint File was Successfully run!");
 Promise.all([
   connect(onGameOver),
   downloadAssets(),
 ]).then(() => {
-  console.log("The EntryPoint File was Successfully run!");
   playMenu.classList.remove('hidden');
   usernameInput.focus();
   playButton.onclick = () => {
     // Play!
-    console.log("The EntryPoint File was Successfully run!");
     play(usernameInput.value);
     playMenu.classList.add('hidden');
     initState();

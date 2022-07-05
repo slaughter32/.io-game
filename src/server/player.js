@@ -23,9 +23,8 @@ class Player extends ObjectClass{
 
         this.fireCooldown -= dt;
         if (this.fireCooldown <= 0 && this.triedToShoot){
-            //console.log("NOW IT REALLY SHOULD HAVE FUCKING SHOT");
-            //later need to make the direction it shoots the direction the mouse is, not the direction the player is looking... 
-            //I can just input that through the shoot function all the way from input where it begins.
+            //need to establish bullets to have their own velocity plus the player velocity
+            //need to start a countdown timer that communicates with render.js to display the shooting cooldown correctly
             this.fireCooldown += Constants.PLAYER_FIRE_COOLDOWN;
             this.triedToShoot = false;
             return new Fireball(this.id, this.x, this.y, this.mDir);

@@ -24,10 +24,13 @@ function setCanvasDimensions() {
 window.addEventListener('resize', debounce(40, setCanvasDimensions));
 
 let animationFrameRequestId;
-
 function render() {
   const { me, others, bullets } = getCurrentState();
   if (me) {//only does this for the local player, not other clients
+
+
+
+
     // Draw background
     renderBackground(me.x, me.y);
 
@@ -86,9 +89,30 @@ function renderPlayer(me, player) {
   );
   context.restore();
 
-  // Draw health bar
-  //this health bar sits under the player whereas ours will be changed to fit in the top left of the screen along with other info
-  //that means we dont need to include this under 'renderPlayer' and will rather create a 'renderStats' or equivelant
+
+ //draws players local healthbar in the top left and draws other players health bars underneath them
+ if (me == player){
+  context.fillStyle = 'white';
+  context.fillRect(//defintely not made to scale with window size...
+    .01 * ((canvas.width + canvas.height) / 2),
+    .01 * ((canvas.width + canvas.height) / 2),
+    .1 * ((canvas.width + canvas.height) / 2),
+    .02 * ((canvas.width + canvas.height) / 2),
+  );
+  context.fillStyle = 'red';
+  context.fillRect(
+    .01 * ((canvas.width + canvas.height) / 2) + ((player.hp / PLAYER_MAX_HP) * .1 * ((canvas.width + canvas.height) / 2)),
+    .01 * ((canvas.width + canvas.height) / 2),
+    .1 * ((canvas.width + canvas.height) / 2) * (1 - player.hp / PLAYER_MAX_HP),
+    .02 * ((canvas.width + canvas.height) / 2),
+  );
+  //locally we want a cooldown to display for firing, for now that will go in the place of the healthbar for other ships
+  //I now need to pass through server time???
+  //since server calculates I need to judge the amount that this is filled based on server time rather than player time
+  
+
+
+ }else{
   context.fillStyle = 'white';
   context.fillRect(
     canvasX - PLAYER_RADIUS,
@@ -103,6 +127,11 @@ function renderPlayer(me, player) {
     PLAYER_RADIUS * 2 * (1 - player.hp / PLAYER_MAX_HP),
     2,
   );
+ }
+ 
+ 
+
+
 }
 
 function renderBullet(me, bullet) {
