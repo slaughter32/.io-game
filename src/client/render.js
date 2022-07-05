@@ -27,10 +27,6 @@ let animationFrameRequestId;
 function render() {
   const { me, others, bullets } = getCurrentState();
   if (me) {//only does this for the local player, not other clients
-
-
-
-
     // Draw background
     renderBackground(me.x, me.y);
 
@@ -109,7 +105,9 @@ function renderPlayer(me, player) {
   //locally we want a cooldown to display for firing, for now that will go in the place of the healthbar for other ships
   //I now need to pass through server time???
   //since server calculates I need to judge the amount that this is filled based on server time rather than player time
-  
+  //export a function from the player that does all the math??
+  //get the time from state? Calculation should run on server though to prevent cheating
+
 
 
  }else{

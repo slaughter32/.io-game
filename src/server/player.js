@@ -20,6 +20,8 @@ class Player extends ObjectClass{
         //sends player location to server to deal with collisions etc
         this.x = Math.max(0, Math.min(Constants.MAP_SIZE, this.x));
         this.y = Math.max(0, Math.min(Constants.MAP_SIZE, this.y));
+        
+        //need to send this.fireCooldown / Constants.PLAYER_FIRE_COOLDOWN to the client
 
         this.fireCooldown -= dt;
         if (this.fireCooldown <= 0 && this.triedToShoot){

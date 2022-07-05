@@ -23,9 +23,6 @@ const Constants = require('../shared/constants');
 
 //may need one of these for every key?
 
-function onMouseInput(e) {
-  console.log(e.clientX, e.clientY);
-}
 function onMouseClick(event){
   //sends input to networking.js which sends input to the server (server.js) which sends input to game.js which finally goes to player.js
   //sends the mouse location so that the bullet goes in the direction the mouse is, but not the direction the player is facing.
@@ -43,7 +40,6 @@ let d = false;
 let height = window.innerHeight;
 let width = window.innerWidth;
 console.log(`center: ${x}, ${y}`);
-gotInput();//run this once at the start to show that the player is not moving (prevents moving without player input on start)
 function onKeyDown(event){
   if (event.key === 'd'){
     d = true;
@@ -109,7 +105,6 @@ function Dash(event){
     console.log("Dash!");
   }
 }
-
 function handleInput(x, y) {
   const dir = Math.atan2(x - window.innerWidth / 2, window.innerHeight / 2 - y);
   updateDirection(dir, speed);
@@ -121,7 +116,7 @@ function handleInput(x, y) {
 
 //BOTH
 export function startCapturingInput(){
-    window.addEventListener('mousemove', onMouseInput);
+    //window.addEventListener('mousemove', onMouseInput);
     window.addEventListener('keydown', onKeyDown);
     window.addEventListener('keyup', onKeyUp);
     window.addEventListener('click', onMouseClick);
@@ -129,43 +124,13 @@ export function startCapturingInput(){
     //window.addEventListener('keydown', onKeyInput);
 }
 export function stopCapturingInput(){
-    window.removeEventListener('mousemove', onMouseInput);
+    //window.removeEventListener('mousemove', onMouseInput);
     window.removeEventListener('keydown', onKeyDown);
     window.removeEventListener('keyup', onKeyUp);
     window.removeEventListener('click', onMouseClick);
     window.removeEventListener('keypress', Dash);
     //window.removeEventListener('keydown', onKeyInput);
 }
-
-/*
-// Learn more about this file at:
-// https://victorzhou.com/blog/build-an-io-game-part-1/#6-client-input-%EF%B8%8F
-import { updateDirection } from './networking';
-
-function onMouseInput(e) {
-  handleInput(e.clientX, e.clientY);
+export function start(){//just so that I can prevent the player from having false input at the start
+  gotInput();
 }
-
-function onTouchInput(e) {
-  const touch = e.touches[0];
-  handleInput(touch.clientX, touch.clientY);
-}
-
-function handleInput(x, y) {
-  const dir = Math.atan2(x - window.innerWidth / 2, window.innerHeight / 2 - y);
-  updateDirection(dir);
-}
-
-export function startCapturingInput() {
-  window.addEventListener('mousemove', onMouseInput);
-  window.addEventListener('click', onMouseInput);
-  window.addEventListener('touchstart', onTouchInput);
-  window.addEventListener('touchmove', onTouchInput);
-}
-
-export function stopCapturingInput() {
-  window.removeEventListener('mousemove', onMouseInput);
-  window.removeEventListener('click', onMouseInput);
-  window.removeEventListener('touchstart', onTouchInput);
-  window.removeEventListener('touchmove', onTouchInput);
-}*/
