@@ -25,6 +25,7 @@ class Player extends ObjectClass{
         if (this.fireCooldown <= 0 && this.triedToShoot){
             //need to establish bullets to have their own velocity plus the player velocity
             //need to start a countdown timer that communicates with render.js to display the shooting cooldown correctly
+            //this is a test
             this.fireCooldown += Constants.PLAYER_FIRE_COOLDOWN;
             this.triedToShoot = false;
             return new Fireball(this.id, this.x, this.y, this.mDir);
