@@ -1,15 +1,17 @@
 const ObjectClass = require('./object');
 const Fireball = require('./fireball');
 const Constants = require('../shared/constants');
+const constants = require('../shared/constants');
 
 class Player extends ObjectClass{
-    constructor(id, username, x, y, triedToShoot, mDir){
+    constructor(id, username, x, y, triedToShoot, mDir, fire){
         super(id, x, y, Math.random() * 2 * Math.PI, Constants.PLAYER_SPEED);
         this.username = username;
         this.hp = Constants.PLAYER_MAX_HP;
         this.fireCooldown = 0;
         this.score = 0;
         this.triedToShoot = false;
+        this.fire = this.fireCooldown / Constants.PLAYER_FIRE_COOLDOWN;
     }
 
     update(dt){
@@ -24,14 +26,17 @@ class Player extends ObjectClass{
         //need to send this.fireCooldown / Constants.PLAYER_FIRE_COOLDOWN to the client
 
         this.fireCooldown -= dt;
+        this.fire = this.fireCooldown / Constants.PLAYER_FIRE_COOLDOWN;
+        //console.log(`fire(player): ${this.fire}`);
         if (this.fireCooldown <= 0 && this.triedToShoot){
             //need to establish bullets to have their own velocity plus the player velocity
             //need to start a countdown timer that communicates with render.js to display the shooting cooldown correctly
             //this is a test
-            this.fireCooldown += Constants.PLAYER_FIRE_COOLDOWN;
+            this.fireCooldown = Constants.PLAYER_FIRE_COOLDOWN;
             this.triedToShoot = false;
             return new Fireball(this.id, this.x, this.y, this.mDir);
         }
+        this.triedToShoot = false;
         return null;
     }
     takeBulletDamage(){
@@ -49,10 +54,12 @@ class Player extends ObjectClass{
         this.speed = speed;
     }
     serializeForUpdate(){
+        //console.log(this.id, this.direction, this.hp, this.fire);
         return{
             ...(super.serializeForUpdate()),
             direction: this.direction,
             hp: this.hp,
+            fire: this.fire,
         };
     }
 }

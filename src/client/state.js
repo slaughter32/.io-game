@@ -19,9 +19,9 @@ export function processGameUpdate(update) {
     gameStart = Date.now();
   }
   gameUpdates.push(update);
-
   updateLeaderboard(update.leaderboard);
-
+  //console.log(update.others);
+  //console.log(`fire?: ${update.me.fire}`);
   // Keep only one game update before the current server time
   const base = getBaseUpdate();
   if (base > 0) {
@@ -48,6 +48,7 @@ function getBaseUpdate() {
 // Returns { me, others, bullets }
 export function getCurrentState() {
   if (!firstServerTimestamp) {
+    console.log(`debugging-FST`);
     return {};
   }
 
@@ -57,15 +58,18 @@ export function getCurrentState() {
   // If base is the most recent update we have, use its state.
   // Otherwise, interpolate between its state and the state of (base + 1).
   if (base < 0 || base === gameUpdates.length - 1) {
+    console.log(`debugging`);
     return gameUpdates[gameUpdates.length - 1];
   } else {
     const baseUpdate = gameUpdates[base];
     const next = gameUpdates[base + 1];
     const ratio = (serverTime - baseUpdate.t) / (next.t - baseUpdate.t);
+    //console.log(interpolateObject(baseUpdate.me, next.me, ratio), interpolateObjectArray(baseUpdate.others, next.others, ratio), interpolateObjectArray(baseUpdate.bullets, next.bullets, ratio), baseUpdate.me.fire);
     return {
       me: interpolateObject(baseUpdate.me, next.me, ratio),
       others: interpolateObjectArray(baseUpdate.others, next.others, ratio),
       bullets: interpolateObjectArray(baseUpdate.bullets, next.bullets, ratio),
+      fire: baseUpdate.me.fire,
     };
   }
 }

@@ -95,7 +95,7 @@ function gotInput(){
   if (!w && !s && !a && !d){
     speed = 0;
   }
-  console.log(`w: ${w} a: ${a} s: ${s} d: ${d}`)
+  //console.log(`w: ${w} a: ${a} s: ${s} d: ${d}`)
   handleInput(x, y);
 }
 

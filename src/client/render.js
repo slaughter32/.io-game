@@ -25,8 +25,9 @@ window.addEventListener('resize', debounce(40, setCanvasDimensions));
 
 let animationFrameRequestId;
 function render() {
-  const { me, others, bullets } = getCurrentState();
+  const { me, others, bullets, fire } = getCurrentState();
   if (me) {//only does this for the local player, not other clients
+    //console.log(`fire: ${fire}`);
     // Draw background
     renderBackground(me.x, me.y);
 
@@ -39,8 +40,8 @@ function render() {
     bullets.forEach(renderBullet.bind(null, me));
 
     // Draw all players
-    renderPlayer(me, me);
-    others.forEach(renderPlayer.bind(null, me));
+    renderPlayer(me, me, fire);
+    others.forEach(renderPlayer.bind(null, me, fire));
   }
 
   // Rerun this render function on the next frame
@@ -65,7 +66,7 @@ function renderBackground(x, y) {
 }
 
 // Renders a player at the given coordinates
-function renderPlayer(me, player) {
+function renderPlayer(me, player, fireCooldown) {
   const { x, y, direction } = player;
   const canvasX = canvas.width / 2 + x - me.x;
   const canvasY = canvas.height / 2 + y - me.y;
@@ -102,6 +103,19 @@ function renderPlayer(me, player) {
     .1 * ((canvas.width + canvas.height) / 2) * (1 - player.hp / PLAYER_MAX_HP),
     .02 * ((canvas.width + canvas.height) / 2),
   );
+
+  //fireCooldown
+  if (fireCooldown > 0){
+    //console.log(`fire cooldown: ${fireCooldown}`);
+    context.fillStyle = 'white';
+    context.fillRect(
+      canvasX - PLAYER_RADIUS,
+      canvasY + PLAYER_RADIUS + 8,
+      PLAYER_RADIUS * 2 * fireCooldown,
+      2,
+    );
+  }
+
   //locally we want a cooldown to display for firing, for now that will go in the place of the healthbar for other ships
   //I now need to pass through server time???
   //since server calculates I need to judge the amount that this is filled based on server time rather than player time

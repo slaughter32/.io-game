@@ -114,7 +114,7 @@ class Game{
         const nearbyBullets = this.bullets.filter(
           b => b.distanceTo(player) <= Constants.MAP_SIZE / 2,
         );
-    
+        //console.log(nearbyPlayers.map(p => p.serializeForUpdate()));
         return {
           t: Date.now(),
           me: player.serializeForUpdate(),
