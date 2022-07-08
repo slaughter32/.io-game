@@ -2,12 +2,13 @@
 import Player from "../server/player";
 import { updateDirection } from "./networking";
 import { tryShoot } from "./networking";
+import { tryDash } from "./networking";
 const Constants = require('../shared/constants');
 //mouse for direction the player is looking/aiming
 //wasd for movement
 //mouse0 (leftclick) to throw fireball (if available), here it can just try to throw
 //a fireball and the server will then decide whether or not it can
-//<SPACE> for dashing, dash in direction of mouse, start dash cooldown... dash is more like a teleport
+//<SPACE> for dashing, dash in direction of mouse, start dash cooldown... dash is more like a teleport Dash Cooldown=4 seconds
 //Recall/leave the game and keep your rewards with <b> or <onscreenbutton>... Recall begins 6 second
 //timer where the player cannot move or shoot and is vulnerable. Taking damage cancels the recall 
 //(perhaps allow players to give input in this phase but if they do cancel recall, less vulnerable
@@ -29,6 +30,20 @@ function onMouseClick(event){
   const mouseDir = Math.atan2(event.clientX - window.innerWidth / 2, window.innerHeight / 2 - event.clientY);
   tryShoot(mouseDir);
 }
+function getMouseDir(){
+  var event = window.event;
+  const mouseDir = Math.atan2(event.clientX - window.innerWidth / 2, window.innerHeight / 2 - event.clientY);
+  return mouseDir;
+}
+function Dash(event){
+  if (event.keyCode == 32){
+    console.log("Dash!");
+    tryDash(getMouseDir());
+    //dash in the direction of the mouse?
+    //teleport player forward and start a dash cooldown which is removed on fireball hit or 4 seconds.
+  }
+}
+
 //Really interesting movement code lol
 let speed = Constants.PLAYER_SPEED;
 let x = width / 2;
@@ -99,12 +114,6 @@ function gotInput(){
   handleInput(x, y);
 }
 
-function Dash(event){
-  if (event.keyCode == 32){
-    //teleport player forward and start a dash cooldown which is removed on fireball hit or 4 seconds.
-    console.log("Dash!");
-  }
-}
 function handleInput(x, y) {
   const dir = Math.atan2(x - window.innerWidth / 2, window.innerHeight / 2 - y);
   updateDirection(dir, speed);

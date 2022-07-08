@@ -3,6 +3,7 @@ module.exports = Object.freeze({
     PLAYER_MAX_HP: 3,
     PLAYER_SPEED: 400,
     PLAYER_FIRE_COOLDOWN: 4,//4 second cooldown between fireballs unless you hit a player in which you can instantly shoot again
+    PLAYER_DASH_COOLDOWN: 4,
 
     BULLET_RADIUS: 3,
     BULLET_SPEED: 800,
@@ -17,6 +18,7 @@ module.exports = Object.freeze({
         GAME_UPDATE: 'update',
         INPUT: 'input',
         SHOOT: 'shoot',
+        DASH: 'dash',
         GAME_OVER: 'dead',
     },
 });

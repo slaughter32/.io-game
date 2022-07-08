@@ -43,3 +43,6 @@ export const updateDirection = throttle(20, (dir, speed) => {
 export const tryShoot = throttle(20, (mouseDir) => {
   socket.emit(Constants.MSG_TYPES.SHOOT, mouseDir);
 });
+export const tryDash = throttle(20, (mouseDir) => {
+  socket.emit(Constants.MSG_TYPES.DASH, mouseDir);
+})

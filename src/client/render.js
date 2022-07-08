@@ -40,8 +40,8 @@ function render() {
     bullets.forEach(renderBullet.bind(null, me));
 
     // Draw all players
-    renderPlayer(me, me, fire);
-    others.forEach(renderPlayer.bind(null, me, fire));
+    renderPlayer(me, me);
+    others.forEach(renderPlayer.bind(null, me));
   }
 
   // Rerun this render function on the next frame
@@ -66,8 +66,8 @@ function renderBackground(x, y) {
 }
 
 // Renders a player at the given coordinates
-function renderPlayer(me, player, fireCooldown) {
-  const { x, y, direction } = player;
+function renderPlayer(me, player) {
+  const { x, y, direction, fire, dash } = player;
   const canvasX = canvas.width / 2 + x - me.x;
   const canvasY = canvas.height / 2 + y - me.y;
 
@@ -105,13 +105,24 @@ function renderPlayer(me, player, fireCooldown) {
   );
 
   //fireCooldown
-  if (fireCooldown > 0){
+  if (fire > 0){
     //console.log(`fire cooldown: ${fireCooldown}`);
     context.fillStyle = 'white';
     context.fillRect(
       canvasX - PLAYER_RADIUS,
       canvasY + PLAYER_RADIUS + 8,
-      PLAYER_RADIUS * 2 * fireCooldown,
+      PLAYER_RADIUS * 2 * fire,
+      2,
+    );
+  }
+   //dashCooldown
+   if (dash > 0){
+    //console.log(`fire cooldown: ${fireCooldown}`);
+    context.fillStyle = 'green';
+    context.fillRect(
+      canvasX - PLAYER_RADIUS,
+      canvasY + PLAYER_RADIUS + 12,
+      PLAYER_RADIUS * 2 * dash,
       2,
     );
   }
