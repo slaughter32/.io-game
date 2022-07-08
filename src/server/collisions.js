@@ -10,6 +10,9 @@ function applyCollisions(players, bullets){
             if (bullet.parentID !== player.id && player.distanceTo(bullet) <= Constants.PLAYER_RADIUS + Constants.BULLET_RADIUS){
                 destroyedBullets.push(bullet);
                 player.takeBulletDamage();
+                for (let x = 0; x < players.length; x++){
+                    players[x].halfDashCooldown(bullet.parentID);
+                }
                 break;
             }
         }

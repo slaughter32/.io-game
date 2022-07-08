@@ -29,6 +29,7 @@ class Player extends ObjectClass{
         //need to send this.fireCooldown / Constants.PLAYER_FIRE_COOLDOWN to the client
 
         this.fireCooldown -= dt;
+        //I need to half the current dash cooldown if a player hits another with a fireball
         this.dashCooldown -= dt;
         this.fire = this.fireCooldown / Constants.PLAYER_FIRE_COOLDOWN;
         this.dashRatio = this.dashCooldown / Constants.PLAYER_DASH_COOLDOWN;
@@ -68,6 +69,11 @@ class Player extends ObjectClass{
     dash(mouseDir){
         this.mDir = mouseDir;
         this.triedToDash = true;
+    }
+    halfDashCooldown(id){
+        if (id === this.id){
+            this.dashCooldown = this.dashCooldown / 2;
+        }
     }
     onDealtDamage(){
         this.score += Constants.SCORE_BULLET_HIT;
