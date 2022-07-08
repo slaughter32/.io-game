@@ -9,7 +9,7 @@ module.exports = Object.freeze({
     PLAYER_DASH_COOLDOWN: 4,
     PLAYER_DASH_DISTANCE: 400,
 
-    BULLET_RADIUS: 3,
+    BULLET_RADIUS: 10,
     BULLET_SPEED: 800,
     BULLET_DAMAGE: 1,
 
