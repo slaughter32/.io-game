@@ -13,6 +13,7 @@ class Player extends ObjectClass{
         this.triedToShoot = false;
         this.triedToDash = false;
         this.dashCooldown = 0;
+        this.onIce = false;
         this.dashRatio = this.dashCooldown / Constants.PLAYER_DASH_COOLDOWN;
         this.fire = this.fireCooldown / Constants.PLAYER_FIRE_COOLDOWN;
     }
@@ -22,7 +23,7 @@ class Player extends ObjectClass{
 
         this.score += dt * Constants.SCORE_PER_SECOND;
         
-        //sends player location to server to deal with collisions etc
+        //updates location and makes sure the player is within bounds of the map size
         this.x = Math.max(0, Math.min(Constants.MAP_SIZE, this.x));
         this.y = Math.max(0, Math.min(Constants.MAP_SIZE, this.y));
         
@@ -74,6 +75,12 @@ class Player extends ObjectClass{
         if (id === this.id){
             this.dashCooldown = this.dashCooldown / 2;
         }
+    }
+    setOnIce(){
+        this.onIce = true;
+    }
+    setOffIce(){
+        this.onIce = false;
     }
     onDealtDamage(){
         this.score += Constants.SCORE_BULLET_HIT;

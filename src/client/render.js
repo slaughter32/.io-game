@@ -76,8 +76,9 @@ function renderPlayer(me, player) {
   context.translate(canvasX, canvasY);
   //later I will need to change which image is being rendered for the player based on:
   //rotation, previous rendition(for walk animations etc so that it cycles)
-  context.rotate(direction);  
+  context.rotate(0);
   context.drawImage(
+    //instead of drawing one image, I will need to draw an image based on both the previous image as well as the direction the player is moving...
     getAsset('magechar.png'),
     -PLAYER_RADIUS,
     -PLAYER_RADIUS,
