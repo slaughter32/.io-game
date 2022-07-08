@@ -25,5 +25,11 @@ class Object{
             y: this.y,
         };
     }
+    getX(){
+        return this.x;
+    }
+    getY(){
+        return this.y;
+    }
 }
 module.exports = Object;

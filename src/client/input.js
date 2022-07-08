@@ -23,22 +23,19 @@ const Constants = require('../shared/constants');
 
 
 //may need one of these for every key?
-
+let mouseDir;
 function onMouseClick(event){
   //sends input to networking.js which sends input to the server (server.js) which sends input to game.js which finally goes to player.js
   //sends the mouse location so that the bullet goes in the direction the mouse is, but not the direction the player is facing.
-  const mouseDir = Math.atan2(event.clientX - window.innerWidth / 2, window.innerHeight / 2 - event.clientY);
+  mouseDir = Math.atan2(event.clientX - window.innerWidth / 2, window.innerHeight / 2 - event.clientY);
   tryShoot(mouseDir);
 }
-function getMouseDir(){
-  var event = window.event;
-  const mouseDir = Math.atan2(event.clientX - window.innerWidth / 2, window.innerHeight / 2 - event.clientY);
-  return mouseDir;
+function mouseDirection(event){
+  mouseDir = Math.atan2(event.clientX - window.innerWidth / 2, window.innerHeight / 2 - event.clientY);
 }
 function Dash(event){
   if (event.keyCode == 32){
-    console.log("Dash!");
-    tryDash(getMouseDir());
+    tryDash(mouseDir);
     //dash in the direction of the mouse?
     //teleport player forward and start a dash cooldown which is removed on fireball hit or 4 seconds.
   }
@@ -125,7 +122,7 @@ function handleInput(x, y) {
 
 //BOTH
 export function startCapturingInput(){
-    //window.addEventListener('mousemove', onMouseInput);
+    window.addEventListener('mousemove', mouseDirection);
     window.addEventListener('keydown', onKeyDown);
     window.addEventListener('keyup', onKeyUp);
     window.addEventListener('click', onMouseClick);
@@ -133,7 +130,7 @@ export function startCapturingInput(){
     //window.addEventListener('keydown', onKeyInput);
 }
 export function stopCapturingInput(){
-    //window.removeEventListener('mousemove', onMouseInput);
+    window.removeEventListener('mousemove', mouseDirection);
     window.removeEventListener('keydown', onKeyDown);
     window.removeEventListener('keyup', onKeyUp);
     window.removeEventListener('click', onMouseClick);

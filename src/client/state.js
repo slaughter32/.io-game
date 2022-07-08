@@ -48,7 +48,6 @@ function getBaseUpdate() {
 // Returns { me, others, bullets }
 export function getCurrentState() {
   if (!firstServerTimestamp) {
-    console.log(`debugging-FST`);
     return {};
   }
 
@@ -58,7 +57,6 @@ export function getCurrentState() {
   // If base is the most recent update we have, use its state.
   // Otherwise, interpolate between its state and the state of (base + 1).
   if (base < 0 || base === gameUpdates.length - 1) {
-    console.log(`debugging`);
     return gameUpdates[gameUpdates.length - 1];
   } else {
     const baseUpdate = gameUpdates[base];

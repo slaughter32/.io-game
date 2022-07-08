@@ -1,9 +1,13 @@
+//these are global variables, changing them will change how the game operates. Great for tweaking gameplay settings in testing
 module.exports = Object.freeze({
     PLAYER_RADIUS: 20,
     PLAYER_MAX_HP: 3,
     PLAYER_SPEED: 400,
     PLAYER_FIRE_COOLDOWN: 4,//4 second cooldown between fireballs unless you hit a player in which you can instantly shoot again
+
+    //Dashing
     PLAYER_DASH_COOLDOWN: 4,
+    PLAYER_DASH_DISTANCE: 400,
 
     BULLET_RADIUS: 3,
     BULLET_SPEED: 800,
