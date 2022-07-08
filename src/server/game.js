@@ -36,6 +36,11 @@ class Game{
         this.players[socket.id].shoot(mouseDir);
       }
     }
+    dash(socket, mouseDir){
+      if (this.players[socket.id]){
+        this.players[socket.id].dash(mouseDir);
+      }
+    }
     handleSpeed(socket, speed){
       if (this.players[socket.id]){
         this.players[socket.id].setSpeed(speed);

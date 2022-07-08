@@ -35,6 +35,7 @@ io.on('connection', socket => {
   socket.on(Constants.MSG_TYPES.JOIN_GAME, joinGame);
   socket.on(Constants.MSG_TYPES.INPUT, handleInput);
   socket.on(Constants.MSG_TYPES.SHOOT, shoot);
+  socket.on(Constants.MSG_TYPES.DASH, dash);
   socket.on('disconnect', onDisconnect);
 });
 
@@ -51,6 +52,9 @@ function handleInput(dir, speed) {
 }
 function shoot(mouseDir){
   game.shoot(this, mouseDir);
+}
+function dash(mouseDir){
+  game.dash(this, mouseDir);
 }
 
 function onDisconnect() {
