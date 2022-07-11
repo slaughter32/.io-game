@@ -1,8 +1,11 @@
 //this file is relatively temporary as lots needs to change... Started off a baseline .io project example.
 
+import { constant } from 'lodash';
 import { debounce } from 'throttle-debounce';
 import { getAsset } from './assets';
 import { getCurrentState } from './state';
+import { generateColliders } from './colliderGenerator';
+import { colliderCount } from './colliderGenerator';
 
 const Constants = require('../shared/constants');
 
@@ -20,9 +23,6 @@ function setCanvasDimensions() {
   canvas.width = scaleRatio * window.innerWidth;
   canvas.height = scaleRatio * window.innerHeight;
 }
-
-window.addEventListener('resize', debounce(40, setCanvasDimensions));
-
 let animationFrameRequestId;
 function render() {
   const { me, others, bullets, fire } = getCurrentState();
@@ -42,6 +42,11 @@ function render() {
     // Draw all players
     renderPlayer(me, me);
     others.forEach(renderPlayer.bind(null, me));
+
+    //mouse position to screen position collider generation
+    for (let i = 0; i < colliderCount(); i++){
+      fillRect(generateColliders(me.x, me.y));
+    }
   }
 
   // Rerun this render function on the next frame
@@ -49,20 +54,32 @@ function render() {
 }
 
 function renderBackground(x, y) {
-  const backgroundX = MAP_SIZE / 2 - x + canvas.width / 2;
-  const backgroundY = MAP_SIZE / 2 - y + canvas.height / 2;
-  const backgroundGradient = context.createRadialGradient(
-    backgroundX,
-    backgroundY,
-    MAP_SIZE / 10,
-    backgroundX,
-    backgroundY,
-    MAP_SIZE / 2,
+  //const backgroundX = MAP_SIZE / 2 - x + canvas.width / 2;
+  //const backgroundY = MAP_SIZE / 2 - y + canvas.height / 2;
+  context.save();
+  context.rotate(0);
+  context.translate(-x, -y);
+  context.drawImage(
+    getAsset('mainmapio.png'),
+    canvas.width / 2,
+    canvas.height / 2,
+    MAP_SIZE,
+    MAP_SIZE,
   );
-  backgroundGradient.addColorStop(0, 'black');
-  backgroundGradient.addColorStop(1, 'gray');
-  context.fillStyle = backgroundGradient;
-  context.fillRect(0, 0, canvas.width, canvas.height);
+  context.restore();
+  
+  // const backgroundGradient = context.createRadialGradient(
+  //   backgroundX,
+  //   backgroundY,
+  //   MAP_SIZE / 10,
+  //   backgroundX,
+  //   backgroundY,
+  //   MAP_SIZE / 2,
+  // );
+  //backgroundGradient.addColorStop(0, 'black');
+  //backgroundGradient.addColorStop(1, 'gray');
+  //context.fillStyle = backgroundGradient;
+  //context.fillRect(0, 0, canvas.width, canvas.height);
 }
 
 // Renders a player at the given coordinates
@@ -86,6 +103,8 @@ function renderPlayer(me, player) {
     PLAYER_RADIUS * 2,
   );
   context.restore();
+
+
 
 
  //draws players local healthbar in the top left and draws other players health bars underneath them
@@ -173,7 +192,7 @@ function renderMainMenu() {
   const t = Date.now() / 7500;
   const x = MAP_SIZE / 2 + 800 * Math.cos(t);
   const y = MAP_SIZE / 2 + 800 * Math.sin(t);
-  renderBackground(x, y);
+  //renderBackground(x, y);
 
   // Rerun this render function on the next frame
   animationFrameRequestId = requestAnimationFrame(renderMainMenu);

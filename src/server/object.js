@@ -7,6 +7,8 @@ class Object{
         this.speed = speed;
     }
     update(dt){
+
+        //first I need to apply collisions which should tell the character if they are able to move in a particular direction
         this.x += dt * this.speed * Math.sin(this.direction);
         this.y -= dt * this.speed * Math.cos(this.direction);
     }

@@ -51,7 +51,6 @@ let s = false;
 let d = false;
 let height = window.innerHeight;
 let width = window.innerWidth;
-console.log(`center: ${x}, ${y}`);
 function onKeyDown(event){
   if (event.key === 'd'){
     d = true;

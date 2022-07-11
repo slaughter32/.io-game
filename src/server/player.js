@@ -21,6 +21,8 @@ class Player extends ObjectClass{
     update(dt){
         super.update(dt);
 
+        //console.log(`player coords: ${this.x}, ${this.y}`);
+
         this.score += dt * Constants.SCORE_PER_SECOND;
         
         //updates location and makes sure the player is within bounds of the map size
