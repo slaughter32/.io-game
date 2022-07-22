@@ -1,7 +1,6 @@
 const ObjectClass = require('./object');
 const Fireball = require('./fireball');
 const Constants = require('../shared/constants');
-const constants = require('../shared/constants');
 
 class Player extends ObjectClass{
     constructor(id, username, x, y, mDir, fire){

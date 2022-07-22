@@ -4,8 +4,7 @@ import { constant } from 'lodash';
 import { debounce } from 'throttle-debounce';
 import { getAsset } from './assets';
 import { getCurrentState } from './state';
-import { generateColliders } from './colliderGenerator';
-import { colliderCount } from './colliderGenerator';
+import { getDebugBoxes } from './colliderGenerator';
 
 const Constants = require('../shared/constants');
 
@@ -42,11 +41,28 @@ function render() {
     // Draw all players
     renderPlayer(me, me);
     others.forEach(renderPlayer.bind(null, me));
+    if (Constants.COLLISION_EDITOR){
+      for (let i = 0; i < getDebugBoxes().length; i++){
+        let temp = getDebugBoxes();
+        //offset from original(so that the collider boxes move with the screen)
+        
+        let offsetX = temp[i][4] - me.x;
+        let offsetY = temp[i][5] - me.y;
+        let x = temp[i][0] + offsetX;
+        let y = temp[i][1] + offsetY;
+        let width = temp[i][2];
+        let height = temp[i][3];
+        console.log(temp);
+        context.fillStyle = "green";
+        context.fillRect(x, y, width, height);
+        context.restore();
+      }
+    }
 
     //mouse position to screen position collider generation
-    for (let i = 0; i < colliderCount(); i++){
-      fillRect(generateColliders(me.x, me.y));
-    }
+    // for (let i = 0; i < colliderCount(); i++){
+    //   fillRect(generateColliders(me.x, me.y));
+    // }
   }
 
   // Rerun this render function on the next frame
