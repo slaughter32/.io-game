@@ -52,9 +52,8 @@ function render() {
         let y = temp[i][1] + offsetY;
         let width = temp[i][2];
         let height = temp[i][3];
-        console.log(temp);
-        context.fillStyle = "green";
-        context.fillRect(x, y, width, height);
+        context.strokeStyle = "green";
+        context.strokeRect(x, y, width, height);
         context.restore();
       }
     }
