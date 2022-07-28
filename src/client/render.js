@@ -48,8 +48,8 @@ function render() {
         
         let offsetX = temp[i][4] - me.x;
         let offsetY = temp[i][5] - me.y;
-        let x = temp[i][0] + offsetX;
-        let y = temp[i][1] + offsetY;
+        let x = temp[i][0] + offsetX + (window.innerWidth / 2);
+        let y = temp[i][1] + offsetY + (window.innerHeight / 2);
         let width = temp[i][2];
         let height = temp[i][3];
         context.strokeStyle = "green";

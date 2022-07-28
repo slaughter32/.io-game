@@ -1,14 +1,45 @@
+import { size } from 'lodash';
 import { generate } from 'shortid';
 import { getCurrentState } from './state';
+import { getBFA } from './theBigColliderArray';
+import { getBFAMapSize } from './theBigColliderArray';
 const Constants = require('../shared/constants');
 
 
+
 let debugBoxes = [];
+let originalMapSize = getBFAMapSize();
 let mouseDownX, mouseDownY, mouseX, mouseY;
 let creating = false;
 let doneCreating = false;
 
 if (Constants.COLLISION_EDITOR){ //only edit colliders if you are supposed to
+    debugBoxes = getBFA();
+    //if array already exists at run, check to see if the map size has changed then scale the array accordingly if it has.
+    if (debugBoxes != null){
+        console.log("debugBoxes set to existing collision array");
+        console.log("DebugBoxes: " + debugBoxes);
+        if (Constants.MAP_SIZE != getBFAMapSize()){
+            let sizeDiff =  Constants.MAP_SIZE / getBFAMapSize();
+            console.log(`the map size has been changed since editing these colliders. The edited map size was ${sizeDiff} times larger than now`);
+            console.log(`debugBoxes Size: ${debugBoxes.length}`);
+            for (let i = 0; i < debugBoxes.length; i++){
+                debugBoxes[i][0] = debugBoxes[i][0] * sizeDiff;
+                debugBoxes[i][1] = debugBoxes[i][1] * sizeDiff;
+                for (let o = 2; o < 6; o++){
+                    //if the map size has increased (you can see less on your screen since the map is bigger) the colliders need to scale accordingly.
+                    //ex: 1600 editing becomes 6400 in-game--> player starting pos becomes 3200, 3200 instead of 800, 800
+                    //the world positions need to multiply by 4 (me.x, me.y, debugboxes[-][4] and [5])
+                    //the width and height needs to multiply by 4
+                    //screenspace coordinates are wonky, you would think they remain the same though...
+
+                    //the screenspace coordinates seem to scale by a much larger amount the further from the center they are
+                    debugBoxes[i][o] = debugBoxes[i][o] * sizeDiff; // lol
+                }
+            }
+        }
+    }
+
     window.addEventListener('mousedown', (e) => {
         mouseDownX = e.clientX;
         mouseDownY = e.clientY;
@@ -28,6 +59,7 @@ if (Constants.COLLISION_EDITOR){ //only edit colliders if you are supposed to
             let colls = generateColliders();
             console.log(colls);
             console.log(`Colliders as a string:\nMap Size: ${Constants.MAP_SIZE}\n${colls}`);
+            console.log(debugBoxes);
         }
         if (e.key == 'p'){//player coords
             const {me} = getCurrentState();
@@ -37,8 +69,11 @@ if (Constants.COLLISION_EDITOR){ //only edit colliders if you are supposed to
     function createDebugRect(finalX, finalY){
         const { me, others, bullets, fire } = getCurrentState();
         let temp = []; //temporary array to hold a debugBox
-        temp[0] = mouseDownX; //x-starting
-        temp[1] = mouseDownY; //y-starting
+        if (finalX - mouseDownX < 5){
+            return;
+        }
+        temp[0] = mouseDownX - (window.innerWidth / 2); //x-starting
+        temp[1] = mouseDownY - (window.innerHeight / 2); //y-starting
         temp[2] = finalX - mouseDownX; //width
         temp[3] = finalY - mouseDownY; //height
         temp[4] = me.x; //x and y coords of player are so that the collider boxes can move with the player/not stay stagnant to the camera
@@ -56,23 +91,21 @@ if (Constants.COLLISION_EDITOR){ //only edit colliders if you are supposed to
                 //For the X coordinates
                 if (debugBoxes[i][2] < 0){//if drawn backwards
                     //top left x = playerx + (mouseDownX - windowWidth + width)--width is negative in this case so its actually subtracting it
-                    coordSet[0] = debugBoxes[i][4] + (debugBoxes[i][0] - (window.innerWidth / 2) + debugBoxes[i][2]);
-                    coordSet[2] = debugBoxes[i][4] + (debugBoxes[i][0] - (window.innerWidth / 2));
+                    coordSet[0] = debugBoxes[i][4] + (debugBoxes[i][0] + debugBoxes[i][2]);
+                    coordSet[2] = debugBoxes[i][4] + (debugBoxes[i][0]);
                 }else{
-                    coordSet[0] = debugBoxes[i][4] + (debugBoxes[i][0] - (window.innerWidth / 2));
-                    coordSet[2] = debugBoxes[i][4] + (debugBoxes[i][0] - (window.innerWidth / 2) + debugBoxes[i][2]);
+                    coordSet[0] = debugBoxes[i][4] + (debugBoxes[i][0]);
+                    coordSet[2] = debugBoxes[i][4] + (debugBoxes[i][0] + debugBoxes[i][2]);
                 }
                 //For the Y coordinates
-                console.log("Height: " + debugBoxes[i][3]);
-                console.log("window inner height / 2: " + window.innerHeight / 2);
                 if (debugBoxes[i][3] < 0){//if drawn up
                     //top left y = playerY + (mousedownY - windowHeight + height)--height is negative in this case so its actually subtracting it
-                    coordSet[1] = debugBoxes[i][5] + (debugBoxes[i][1] - (window.innerHeight / 2) + debugBoxes[i][3])
-                    coordSet[3] = debugBoxes[i][5] + (debugBoxes[i][1] - (window.innerHeight / 2));
+                    coordSet[1] = debugBoxes[i][5] + (debugBoxes[i][1] + debugBoxes[i][3])
+                    coordSet[3] = debugBoxes[i][5] + (debugBoxes[i][1]);
                 }
                 else{
-                    coordSet[1] = debugBoxes[i][5] + (debugBoxes[i][1] - (window.innerHeight / 2))
-                    coordSet[3] = debugBoxes[i][5] + (debugBoxes[i][1] - (window.innerHeight / 2) + debugBoxes[i][3]);
+                    coordSet[1] = debugBoxes[i][5] + (debugBoxes[i][1])
+                    coordSet[3] = debugBoxes[i][5] + (debugBoxes[i][1] + debugBoxes[i][3]);
                 }  
             }
             colliders.push(coordSet); //add a set of coordinates to the array of coordinate sets
