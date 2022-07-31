@@ -25,6 +25,8 @@ class Player extends ObjectClass{
         this.score += dt * Constants.SCORE_PER_SECOND;
         
         //updates location and makes sure the player is within bounds of the map size
+        //Run collision detection to see if the player can move in a given direction
+        
         this.x = Math.max(0, Math.min(Constants.MAP_SIZE, this.x));
         this.y = Math.max(0, Math.min(Constants.MAP_SIZE, this.y));
         
