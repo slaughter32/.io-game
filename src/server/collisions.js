@@ -1,5 +1,6 @@
 const { ModuleFilenameHelpers } = require('webpack');
 const Constants = require('../shared/constants');
+const BFA = require('./BFA');
 
 //Player Collisions:
 //By default, the game makes sure the player is within the map size bounds by simply not allowing the x or y values to surpass the map size
@@ -9,10 +10,6 @@ const Constants = require('../shared/constants');
 //if the player is colliding with 2 sides of the box, restrict the players movement in both directions (or perhaps even 3 in some scenarios)
 //these boxes also need to be passed through to render so that they can be drawn as a series of rectangles on the client
 
-//Player Ice Detection:
-//Ice will be present in some scenarios, changing how player input works... This can be read as onIce in the player...
-//Ice detection works the same as box detection, but should not restrict players movement but rather tell the player they are on ice so that their movement can become harder to control
-//Ice also needs to be passed on to the client render function so that it can draw an ice-colored rectangle
 
 //All collision points need to be generated once and sent once.
 
@@ -36,4 +33,12 @@ function applyCollisions(players, bullets){
     return destroyedBullets;
 }
 
+//BFA is an array of all colliders containing 4 elements for each [0]-top left x, [1]-top left y, [2]-bottom right x, [3]-bottom right y
+function checkPlayerCollisions(player){
+    for (let i = 0; i < BFA.length; i++){
+        
+    }
+}
+
 module.exports = applyCollisions;
+module.exports = checkPlayerCollisions;
