@@ -4,34 +4,35 @@ let arrMapSize = 1600; //change depending on the map size present in the array o
 
 let BFA = [
     [
-        15,
-        47,
-        22,
-        21,
-        800,
-        800
+        60,
+        188,
+        88,
+        84,
+        3200,
+        3200
     ],
     [
-        27,
-        -29,
-        10,
-        10,
-        800,
-        800
+        108,
+        -116,
+        40,
+        40,
+        3200,
+        3200
     ],
     [
-        -69,
-        -54,
-        8,
-        12,
-        800,
-        800
+        -276,
+        -216,
+        32,
+        48,
+        3200,
+        3200
     ]
 ];
 
+let colliders = [];
 generateColliders();
 //generate colliders only needs to run once at the start of the game
-let colliders = [];
+
 function generateColliders(){
     for (let i = 0; i < BFA.length; i++){
         let coordSet = [];//each temp contains 2 coordinates, and 4 elements.. 
@@ -59,13 +60,12 @@ function generateColliders(){
         }
         colliders.push(coordSet); //add a set of coordinates to the array of coordinate sets
     }
+    console.log(colliders);
     return (colliders); //return the array containing all the arrays of coordinates
 }
 
-export function getBFA(){
+function getBFA(){
     console.log('getBFA() was run');
     return colliders;
 }
-export function getBFAMapSize(){
-    return arrMapSize;
-}
+module.exports = getBFA;

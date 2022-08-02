@@ -1,7 +1,6 @@
 const Constants = require('../shared/constants');
 const Player = require('./player');
-const applyCollisions = require('./collisions');
-const checkPlayerCollisions = require('./collisions');
+const collisions = require('./collisions');
 
 class Game{
     constructor(){
@@ -74,12 +73,12 @@ class Game{
         });
 
         //Apply collisions for each player to game colliders
-        players.forEach(player => {
-          checkPlayerCollisions(player);
-        });
+        // for (let i = 0; i < this.players.length; i++){
+        //   player.checkCollisions(checkPlayerCollisions(player));
+        // }
         
         //Apply collisions, give players score for bullets that hit
-        const destroyedBullets = applyCollisions(Object.values(this.players), this.bullets);
+        const destroyedBullets = collisions.applyCollisions(Object.values(this.players), this.bullets);
         destroyedBullets.forEach(b => {
           if (this.players[b.parentID]) {
             this.players[b.parentID].onDealtDamage();
@@ -87,7 +86,7 @@ class Game{
         });
         this.bullets = this.bullets.filter(bullet => !destroyedBullets.includes(bullet));
     
-        // Check if any players are dead
+        // Check if any players are dead and apply player collisions
         Object.keys(this.sockets).forEach(playerID => {
           const socket = this.sockets[playerID];
           const player = this.players[playerID];
@@ -95,6 +94,10 @@ class Game{
             socket.emit(Constants.MSG_TYPES.GAME_OVER);
             this.removePlayer(socket);
           }
+        });
+        Object.keys(this.players).forEach(playerID => {
+          const player = this.players[playerID];
+          player.checkCollisions(collisions.checkPlayerCollisions(player));
         });
     
         // Send a game update to each player every other time

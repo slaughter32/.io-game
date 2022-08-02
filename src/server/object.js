@@ -1,3 +1,5 @@
+const constants = require("../shared/constants");
+
 class Object{
     constructor(id, x, y, dir, speed){
         this.id = id;
@@ -9,8 +11,11 @@ class Object{
     update(dt){
 
         //first I need to apply collisions which should tell the character if they are able to move in a particular direction
-        this.x += dt * this.speed * Math.sin(this.direction);
-        this.y -= dt * this.speed * Math.cos(this.direction);
+        //while this makes sense when the player and bullet function somewhat similarly, it makes more sense to offload this to the player if it is dealing with a player
+        if (this.speed != constants.PLAYER_SPEED){ //do this for everything but the player... players and other objects can no longer share the same speed though...
+            this.x += dt * this.speed * Math.sin(this.direction);
+            this.y -= dt * this.speed * Math.cos(this.direction);
+        }
     }
     distanceTo(object){
         const dx = this.x - object.x;

@@ -1,7 +1,7 @@
+const { constant } = require('lodash');
 const { ModuleFilenameHelpers } = require('webpack');
 const Constants = require('../shared/constants');
-const BFA = require('./BFA');
-
+const getBFA = require('./BFA');
 //Player Collisions:
 //By default, the game makes sure the player is within the map size bounds by simply not allowing the x or y values to surpass the map size
 //We also need players to collide with walls, however
@@ -32,13 +32,30 @@ function applyCollisions(players, bullets){
     }
     return destroyedBullets;
 }
-
+let BFA = getBFA();
 //BFA is an array of all colliders containing 4 elements for each [0]-top left x, [1]-top left y, [2]-bottom right x, [3]-bottom right y
 function checkPlayerCollisions(player){
+    //console.log("Checking Collisions for Player id: " + player.id);h
+    //console.log(BFA.length);
+    let colls = [false, false, false, false]; //x to the right, x to the left, y up, y down
     for (let i = 0; i < BFA.length; i++){
-        
-    }
-}
+        //console.log('thing happen');
+        //let centX = (BFA[i][0] + BFA[i][2]) / 2;
+        //let centY = (BFA[i][1] + BFA[i][3]) / 2;
+        //if (Math.hypot(centX - player.x, centY - player.y) > Constants.PLAYER_RADIUS * 20){continue};
+        //X
+        if (Math.abs(player.x - BFA[i][2]) < Constants.PLAYER_RADIUS && player.y < BFA[i][3] + Constants.PLAYER_RADIUS && player.y > BFA[i][1] - Constants.PLAYER_RADIUS) {colls[1] = true};
+        if (Math.abs(BFA[i][0] - player.x) < Constants.PLAYER_RADIUS && player.y < BFA[i][3] + Constants.PLAYER_RADIUS && player.y > BFA[i][1] - Constants.PLAYER_RADIUS) {colls[0] = true};
+        //Y
+        if (Math.abs(player.y - BFA[i][3]) < Constants.PLAYER_RADIUS && player.x < BFA[i][2] + Constants.PLAYER_RADIUS && player.x > BFA[i][0] - Constants.PLAYER_RADIUS) {colls[3] = true};
+        if (Math.abs(BFA[i][1] - player.y) < Constants.PLAYER_RADIUS && player.x < BFA[i][2] + Constants.PLAYER_RADIUS && player.x > BFA[i][0] - Constants.PLAYER_RADIUS) {colls[4] = true};
 
-module.exports = applyCollisions;
-module.exports = checkPlayerCollisions;
+        //Distance if else--irrelevant
+        //return (Math.sqrt(Math.pow((player.x - centX), 2) + Math.pow((player.y - centY), 2)));
+    }
+    return colls;
+}
+exports.applyCollisions = applyCollisions;
+exports.checkPlayerCollisions = checkPlayerCollisions;
+// module.exports = applyCollisions;
+// module.exports = checkPlayerCollisions;

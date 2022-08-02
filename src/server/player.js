@@ -12,9 +12,9 @@ class Player extends ObjectClass{
         this.triedToShoot = false;
         this.triedToDash = false;
         this.dashCooldown = 0;
-        this.onIce = false;
         this.dashRatio = this.dashCooldown / Constants.PLAYER_DASH_COOLDOWN;
         this.fire = this.fireCooldown / Constants.PLAYER_FIRE_COOLDOWN;
+        this.canMove = [true, true, true, true]; // x right, x left, y up, y down
     }
 
     update(dt){
@@ -26,7 +26,10 @@ class Player extends ObjectClass{
         
         //updates location and makes sure the player is within bounds of the map size
         //Run collision detection to see if the player can move in a given direction
-        
+        //console.log(`canMove: ${this.canMove}`);
+        this.x += dt * this.speed * Math.sin(this.direction);
+        this.y -= dt * this.speed * Math.cos(this.direction);
+        //prevents player from moving below 0 or beyond MAP_SIZE
         this.x = Math.max(0, Math.min(Constants.MAP_SIZE, this.x));
         this.y = Math.max(0, Math.min(Constants.MAP_SIZE, this.y));
         
@@ -79,11 +82,9 @@ class Player extends ObjectClass{
             this.dashCooldown = this.dashCooldown / 2;
         }
     }
-    setOnIce(){
-        this.onIce = true;
-    }
-    setOffIce(){
-        this.onIce = false;
+    checkCollisions(colls){
+        //console.log("checking player collisions: " + this.id);
+        this.canMove = colls;
     }
     onDealtDamage(){
         this.score += Constants.SCORE_BULLET_HIT;
