@@ -37,18 +37,18 @@ let BFA = getBFA();
 function checkPlayerCollisions(player){
     //console.log("Checking Collisions for Player id: " + player.id);h
     //console.log(BFA.length);
-    let colls = [false, false, false, false]; //x to the right, x to the left, y up, y down
+    let colls = [0, 0, 0, 0]; //x to the right, x to the left, y up, y down
     for (let i = 0; i < BFA.length; i++){
         //console.log('thing happen');
         //let centX = (BFA[i][0] + BFA[i][2]) / 2;
         //let centY = (BFA[i][1] + BFA[i][3]) / 2;
         //if (Math.hypot(centX - player.x, centY - player.y) > Constants.PLAYER_RADIUS * 20){continue};
         //X
-        if (Math.abs(player.x - BFA[i][2]) < Constants.PLAYER_RADIUS && player.y < BFA[i][3] + Constants.PLAYER_RADIUS && player.y > BFA[i][1] - Constants.PLAYER_RADIUS) {colls[1] = true};
-        if (Math.abs(BFA[i][0] - player.x) < Constants.PLAYER_RADIUS && player.y < BFA[i][3] + Constants.PLAYER_RADIUS && player.y > BFA[i][1] - Constants.PLAYER_RADIUS) {colls[0] = true};
+        if (Math.abs(player.x - BFA[i][2]) < Constants.PLAYER_RADIUS && player.y < BFA[i][3] + Constants.PLAYER_RADIUS && player.y > BFA[i][1] - Constants.PLAYER_RADIUS) {colls[1] = BFA[i][2] + Constants.PLAYER_RADIUS};
+        if (Math.abs(BFA[i][0] - player.x) < Constants.PLAYER_RADIUS && player.y < BFA[i][3] + Constants.PLAYER_RADIUS && player.y > BFA[i][1] - Constants.PLAYER_RADIUS) {colls[0] = BFA[i][0] - Constants.PLAYER_RADIUS};
         //Y
-        if (Math.abs(player.y - BFA[i][3]) < Constants.PLAYER_RADIUS && player.x < BFA[i][2] + Constants.PLAYER_RADIUS && player.x > BFA[i][0] - Constants.PLAYER_RADIUS) {colls[3] = true};
-        if (Math.abs(BFA[i][1] - player.y) < Constants.PLAYER_RADIUS && player.x < BFA[i][2] + Constants.PLAYER_RADIUS && player.x > BFA[i][0] - Constants.PLAYER_RADIUS) {colls[4] = true};
+        if (Math.abs(player.y - BFA[i][3]) < Constants.PLAYER_RADIUS && player.x < BFA[i][2] + Constants.PLAYER_RADIUS && player.x > BFA[i][0] - Constants.PLAYER_RADIUS) {colls[2] = BFA[i][3] + Constants.PLAYER_RADIUS};
+        if (Math.abs(BFA[i][1] - player.y) < Constants.PLAYER_RADIUS && player.x < BFA[i][2] + Constants.PLAYER_RADIUS && player.x > BFA[i][0] - Constants.PLAYER_RADIUS) {colls[3] = BFA[i][1] - Constants.PLAYER_RADIUS};
 
         //Distance if else--irrelevant
         //return (Math.sqrt(Math.pow((player.x - centX), 2) + Math.pow((player.y - centY), 2)));

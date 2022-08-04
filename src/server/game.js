@@ -66,6 +66,7 @@ class Game{
         //update each player
         Object.keys(this.sockets).forEach(playerID => {
             const player = this.players[playerID];
+            player.checkCollisions(collisions.checkPlayerCollisions(player));
             const newBullet = player.update(dt);
             if (newBullet){
                 this.bullets.push(newBullet);
@@ -95,10 +96,10 @@ class Game{
             this.removePlayer(socket);
           }
         });
-        Object.keys(this.players).forEach(playerID => {
-          const player = this.players[playerID];
-          player.checkCollisions(collisions.checkPlayerCollisions(player));
-        });
+        // Object.keys(this.players).forEach(playerID => {
+        //   const player = this.players[playerID];
+        //   player.checkCollisions(collisions.checkPlayerCollisions(player));
+        // });
     
         // Send a game update to each player every other time
         if (this.shouldSendUpdate) {

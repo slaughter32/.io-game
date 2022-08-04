@@ -1,6 +1,7 @@
 const ObjectClass = require('./object');
 const Fireball = require('./fireball');
 const Constants = require('../shared/constants');
+//const collisions = require('./collisions');
 
 class Player extends ObjectClass{
     constructor(id, username, x, y, mDir, fire){
@@ -27,8 +28,50 @@ class Player extends ObjectClass{
         //updates location and makes sure the player is within bounds of the map size
         //Run collision detection to see if the player can move in a given direction
         //console.log(`canMove: ${this.canMove}`);
-        this.x += dt * this.speed * Math.sin(this.direction);
-        this.y -= dt * this.speed * Math.cos(this.direction);
+        //canmove[0]->[3]:: x right, x left, y up, y down
+        //this.x += dt * this.speed * Math.sin(this.direction); // > 0 or < 0
+        //this.y -= dt * this.speed * Math.cos(this.direction); // > 0 or < 0
+        //ideally the player should only try to move in a given direction if it can
+        //this.canMove = collisions.checkPlayerCollisions(this);
+        if (this.canMove[0] != 0 || this.canMove[1] != 0){
+            if (this.canMove[0] != 0){//restrict right
+                // if (this.x > this.canMove[0]){
+                //     this.x = this.canMove[0];
+                // }
+                if (Math.sin(this.direction) < 0){
+                    this.x += dt * this.speed * Math.sin(this.direction);
+                }
+            }else{//restrict left
+                // if (this.x < this.canMove[1]){
+                //     this.x = this.canMove[1];
+                // }
+                if (Math.sin(this.direction) > 0){
+                    this.x += dt * this.speed * Math.sin(this.direction);
+                }
+            }
+        }else{
+            this.x += dt * this.speed * Math.sin(this.direction);
+        }
+        if (this.canMove[2] != 0 || this.canMove[3] != 0){
+            if (this.canMove[2] != 0){//restrict up
+                // if (this.y < this.canMove[2]){
+                //     this.y = this.canMove[2];
+                // }
+                if (Math.cos(this.direction) < 0){
+                    this.y -= dt * this.speed * Math.cos(this.direction);
+                }
+            }else{//restrict down
+                // if (this.y > this.canMove[3]){
+                //     this.y = this.canMove[3];
+                // }
+                if (Math.cos(this.direction) > 0){
+                    this.y -= dt * this.speed * Math.cos(this.direction);
+                }
+            }
+        }else{
+            this.y -= dt * this.speed * Math.cos(this.direction);
+        }
+        
         //prevents player from moving below 0 or beyond MAP_SIZE
         this.x = Math.max(0, Math.min(Constants.MAP_SIZE, this.x));
         this.y = Math.max(0, Math.min(Constants.MAP_SIZE, this.y));
