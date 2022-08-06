@@ -13,12 +13,12 @@ const getBFA = require('./BFA');
 
 //All collision points need to be generated once and sent once.
 
-
+let BFA = getBFA();
 function applyCollisions(players, bullets){
     const destroyedBullets = [];
     for (let i = 0; i < bullets.length; i++){
+        const bullet = bullets[i];
         for (let j = 0; j < players.length; j++){
-            const bullet = bullets[i];
             const player = players[j];
             if (bullet.parentID !== player.id && player.distanceTo(bullet) <= Constants.PLAYER_RADIUS + Constants.BULLET_RADIUS){
                 destroyedBullets.push(bullet);
@@ -29,10 +29,16 @@ function applyCollisions(players, bullets){
                 break;
             }
         }
+        //check for collisions with colliders in the map
+        /*
+        for (let o = 0; o <BFA.length; o++){
+            
+        }
+        */
     }
     return destroyedBullets;
 }
-let BFA = getBFA();
+
 //BFA is an array of all colliders containing 4 elements for each [0]-top left x, [1]-top left y, [2]-bottom right x, [3]-bottom right y
 function checkPlayerCollisions(player){
     //console.log("Checking Collisions for Player id: " + player.id);h

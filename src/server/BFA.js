@@ -236,7 +236,7 @@ function generateColliders(){
         }
         colliders.push(coordSet); //add a set of coordinates to the array of coordinate sets
     }
-    console.log(colliders);
+    //console.log(colliders);
     return (colliders); //return the array containing all the arrays of coordinates
 }
 
