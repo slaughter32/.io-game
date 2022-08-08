@@ -124,20 +124,34 @@ function renderPlayer(me, player) {
 
  //draws players local healthbar in the top left and draws other players health bars underneath them
  if (me == player){
-  context.fillStyle = 'white';
-  context.fillRect(//defintely not made to scale with window size...
-    .01 * ((canvas.width + canvas.height) / 2),
-    .01 * ((canvas.width + canvas.height) / 2),
-    .1 * ((canvas.width + canvas.height) / 2),
-    .02 * ((canvas.width + canvas.height) / 2),
-  );
-  context.fillStyle = 'red';
-  context.fillRect(
-    .01 * ((canvas.width + canvas.height) / 2) + ((player.hp / PLAYER_MAX_HP) * .1 * ((canvas.width + canvas.height) / 2)),
-    .01 * ((canvas.width + canvas.height) / 2),
-    .1 * ((canvas.width + canvas.height) / 2) * (1 - player.hp / PLAYER_MAX_HP),
-    .02 * ((canvas.width + canvas.height) / 2),
-  );
+  let image = '';
+  let offset = 3;
+  let scale = 1.5;
+  //dashCooldown
+  if (dash > 0){
+    //console.log(`fire cooldown: ${fireCooldown}`);
+    context.fillStyle = 'aqua';
+    context.fillRect(
+      offset + 80 * scale,
+      offset + 23 * scale,
+      90 * 2 * dash,
+      10 * scale,
+    );
+  }
+
+  if (me.hp > 0){
+    if (me.hp == 3){ image = 'hud3hp.png'};
+    if (me.hp == 2){ image = 'hud2hp.png'};
+    if (me.hp == 1){ image = 'hud1hp.png'};
+    context.drawImage(
+      getAsset(image),
+      offset,
+      offset,
+      231 * scale,
+      72 * scale,
+    );
+  }
+
 
   //fireCooldown
   if (fire > 0){
@@ -150,17 +164,8 @@ function renderPlayer(me, player) {
       2,
     );
   }
-   //dashCooldown
-   if (dash > 0){
-    //console.log(`fire cooldown: ${fireCooldown}`);
-    context.fillStyle = 'green';
-    context.fillRect(
-      canvasX - PLAYER_RADIUS,
-      canvasY + PLAYER_RADIUS + 12,
-      PLAYER_RADIUS * 2 * dash,
-      2,
-    );
-  }
+
+  context.restore();
 
   //locally we want a cooldown to display for firing, for now that will go in the place of the healthbar for other ships
   //I now need to pass through server time???
@@ -173,23 +178,19 @@ function renderPlayer(me, player) {
  }else{
   context.fillStyle = 'white';
   context.fillRect(
-    canvasX - PLAYER_RADIUS,
-    canvasY + PLAYER_RADIUS + 8,
-    PLAYER_RADIUS * 2,
-    2,
+    canvasX - PLAYER_RADIUS * 1.25,
+    canvasY - PLAYER_RADIUS - 8,
+    PLAYER_RADIUS * 2.5,
+    4,
   );
   context.fillStyle = 'red';
   context.fillRect(
-    canvasX - PLAYER_RADIUS + PLAYER_RADIUS * 2 * player.hp / PLAYER_MAX_HP,
-    canvasY + PLAYER_RADIUS + 8,
-    PLAYER_RADIUS * 2 * (1 - player.hp / PLAYER_MAX_HP),
-    2,
+    canvasX - (PLAYER_RADIUS * 1.25) + PLAYER_RADIUS * 2.5 * player.hp / PLAYER_MAX_HP,
+    canvasY - PLAYER_RADIUS - 8,
+    PLAYER_RADIUS * 2.5 * (1 - player.hp / PLAYER_MAX_HP),
+    4,
   );
  }
- 
- 
-
-
 }
 
 function renderBullet(me, bullet) {
