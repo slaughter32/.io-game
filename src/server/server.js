@@ -7,6 +7,7 @@ const Constants = require('../shared/constants');
 const Game = require('./game');
 const webpackConfig = require('../../webpack.dev.js');
 
+let currentUsers = 0;
 // Setup an Express server
 const app = express();
 app.use(express.static('public'));
@@ -43,6 +44,8 @@ io.on('connection', socket => {
 const game = new Game();
 
 function joinGame(username) {
+  currentUsers++;
+  console.log("Current Players:", currentUsers);
   game.addPlayer(this, username);
 }
 
@@ -58,5 +61,7 @@ function dash(mouseDir){
 }
 
 function onDisconnect() {
+  currentUsers--;
+  console.log("Current Players:", currentUsers);
   game.removePlayer(this);
 }

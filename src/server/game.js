@@ -40,7 +40,7 @@ class Game{
     }
     dash(socket, mouseDir){
       if (this.players[socket.id]){
-        this.players[socket.id].dash(mouseDir);
+        this.players[socket.id].dash(mouseDir, collisions.checkDashCollisions(this.players[socket.id], mouseDir));
       }
     }
     handleSpeed(socket, speed){
@@ -81,7 +81,7 @@ class Game{
         // }
         
         //Apply collisions, give players score for bullets that hit
-        const destroyedBullets = collisions.applyCollisions(Object.values(this.players), this.bullets);
+        let destroyedBullets = collisions.applyCollisions(Object.values(this.players), this.bullets);
         destroyedBullets.forEach(b => {
           if (this.players[b.parentID] && b.playerCollision == true) {
             this.players[b.parentID].onDealtDamage();

@@ -1,8 +1,10 @@
 //these are global variables, changing them will change how the game operates. Great for tweaking gameplay settings in testing
 module.exports = Object.freeze({
-    COLLISION_EDITOR: false, //change to true to write map colliders (will return an array of collidor coordinates when done)
+    COLLISION_EDITOR: true, //change to true to write map colliders (will return an array of collidor coordinates when done)
     //Default Map Size => 6400
     MAP_SIZE: 6400, //highly reccommended to also change the map size in order to make drawing colliders much easier
+
+    COLLISION_DIST: 300,
 
     PLAYER_RADIUS: 20,
     PLAYER_MAX_HP: 3,

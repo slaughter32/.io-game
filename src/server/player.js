@@ -12,6 +12,9 @@ class Player extends ObjectClass{
         this.score = 0;
         this.triedToShoot = false;
         this.triedToDash = false;
+        this.dashX;
+        this.dashY;
+
         this.dashCooldown = 0;
         this.dashRatio = this.dashCooldown / Constants.PLAYER_DASH_COOLDOWN;
         this.fire = this.fireCooldown / Constants.PLAYER_FIRE_COOLDOWN;
@@ -35,16 +38,10 @@ class Player extends ObjectClass{
         //this.canMove = collisions.checkPlayerCollisions(this);
         if (this.canMove[0] != 0 || this.canMove[1] != 0){
             if (this.canMove[0] != 0){//restrict right
-                // if (this.x > this.canMove[0]){
-                //     this.x = this.canMove[0];
-                // }
                 if (Math.sin(this.direction) < 0){
                     this.x += dt * this.speed * Math.sin(this.direction);
                 }
             }else{//restrict left
-                // if (this.x < this.canMove[1]){
-                //     this.x = this.canMove[1];
-                // }
                 if (Math.sin(this.direction) > 0){
                     this.x += dt * this.speed * Math.sin(this.direction);
                 }
@@ -54,16 +51,10 @@ class Player extends ObjectClass{
         }
         if (this.canMove[2] != 0 || this.canMove[3] != 0){
             if (this.canMove[2] != 0){//restrict up
-                // if (this.y < this.canMove[2]){
-                //     this.y = this.canMove[2];
-                // }
                 if (Math.cos(this.direction) < 0){
                     this.y -= dt * this.speed * Math.cos(this.direction);
                 }
             }else{//restrict down
-                // if (this.y > this.canMove[3]){
-                //     this.y = this.canMove[3];
-                // }
                 if (Math.cos(this.direction) > 0){
                     this.y -= dt * this.speed * Math.cos(this.direction);
                 }
@@ -93,6 +84,7 @@ class Player extends ObjectClass{
             return new Fireball(this.id, this.x, this.y, this.mDir);
         }
         if (this.dashCooldown <= 0 && this.triedToDash){
+
             this.dashCooldown = Constants.PLAYER_DASH_COOLDOWN;
             this.triedToDash = false;
             //add some distance to the x and y coordinates of the parent component(super.x, super.y)
@@ -116,8 +108,10 @@ class Player extends ObjectClass{
         this.mDir = mouseDir;
         this.triedToShoot = true;
     }
-    dash(mouseDir){
+    dash(mouseDir, x, y){
         this.mDir = mouseDir;
+        this.dashX = x;
+        this.dashY = y;
         this.triedToDash = true;
     }
     halfDashCooldown(){

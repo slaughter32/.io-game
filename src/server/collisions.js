@@ -31,12 +31,26 @@ function applyCollisions(players, bullets){
         }
         //check for collisions with colliders in the map
         for (let c = 0; c < BFA.length; c++){
+            let centX = (BFA[c][0] + BFA[c][2]) / 2;
+            let centY = (BFA[c][1] + BFA[c][3]) / 2;
+            if (Math.hypot(centX - bullet.x, centY - bullet.y) > Constants.COLLISION_DIST / 2){continue};
+            //unlike the player, direction of the collision is not relevant... This algorithm is a little more efficient
+            circleDistanceX = Math.abs(bullet.x - centX);
+            circleDistanceY = Math.abs(bullet.y - centY);
+            let width = BFA[c][2] - BFA[c][0];
+            let height = BFA[c][3] - BFA[c][1];
+            if (circleDistanceX > (width/2 + Constants.BULLET_RADIUS)) {continue};
+            if (circleDistanceY > (height/2 + Constants.BULLET_RADIUS)) {continue};
+            if (circleDistanceX <= (width/2)) {destroyedBullets.push(bullet)};
+            if (circleDistanceY <= (height/2)) {destroyedBullets.push(bullet)};
+            cornerDistance_sq = (circleDistanceX - width/2)^2 + (circleDistanceY - height/2)^2;
+            if (cornerDistance_sq <= (Constants.BULLET_RADIUS^2)){destroyedBullets.push(bullet)};
             //X
-            if (Math.abs(bullet.x - BFA[c][2]) < Constants.BULLET_RADIUS && bullet.y < BFA[c][3] && bullet.y > BFA[c][1]) {destroyedBullets.push(bullet)};
-            if (Math.abs(BFA[c][0] - bullet.x) < Constants.BULLET_RADIUS && bullet.y < BFA[c][3] && bullet.y > BFA[c][1]) {destroyedBullets.push(bullet)};
-            //Y
-            if (Math.abs(bullet.y - BFA[c][3]) < Constants.BULLET_RADIUS && bullet.x < BFA[c][2] && bullet.x > BFA[c][0]) {destroyedBullets.push(bullet)};
-            if (Math.abs(BFA[c][1] - bullet.y) < Constants.BULLET_RADIUS && bullet.x < BFA[c][2] && bullet.x > BFA[c][0]) {destroyedBullets.push(bullet)};
+            // if (Math.abs(bullet.x - BFA[c][2]) < Constants.BULLET_RADIUS && bullet.y < BFA[c][3] && bullet.y > BFA[c][1]) {destroyedBullets.push(bullet)};
+            // if (Math.abs(bullet.x - BFA[c][0]) < Constants.BULLET_RADIUS && bullet.y < BFA[c][3] && bullet.y > BFA[c][1]) {destroyedBullets.push(bullet)};
+            // //Y
+            // if (Math.abs(bullet.y - BFA[c][3]) < Constants.BULLET_RADIUS && bullet.x < BFA[c][2] && bullet.x > BFA[c][0]) {destroyedBullets.push(bullet)};
+            // if (Math.abs(bullet.y - BFA[c][1]) < Constants.BULLET_RADIUS && bullet.x < BFA[c][2] && bullet.x > BFA[c][0]) {destroyedBullets.push(bullet)};
         }
         
     }
@@ -50,21 +64,34 @@ function checkPlayerCollisions(player){
     let colls = [0, 0, 0, 0]; //x to the right, x to the left, y up, y down
     for (let i = 0; i < BFA.length; i++){
         //console.log('thing happen');
-        //let centX = (BFA[i][0] + BFA[i][2]) / 2;
-        //let centY = (BFA[i][1] + BFA[i][3]) / 2;
+        let centX = (BFA[i][0] + BFA[i][2]) / 2;
+        let centY = (BFA[i][1] + BFA[i][3]) / 2;
         //if (Math.hypot(centX - player.x, centY - player.y) > Constants.PLAYER_RADIUS * 20){continue};
+        if (Math.hypot(centX - player.x, centY - player.y) > Constants.COLLISION_DIST){continue};
         //X
         if (Math.abs(player.x - BFA[i][2]) < Constants.PLAYER_RADIUS && player.y < BFA[i][3] + Constants.PLAYER_RADIUS && player.y > BFA[i][1] - Constants.PLAYER_RADIUS) {colls[1] = BFA[i][2] + Constants.PLAYER_RADIUS};
-        if (Math.abs(BFA[i][0] - player.x) < Constants.PLAYER_RADIUS && player.y < BFA[i][3] + Constants.PLAYER_RADIUS && player.y > BFA[i][1] - Constants.PLAYER_RADIUS) {colls[0] = BFA[i][0] - Constants.PLAYER_RADIUS};
+        if (Math.abs(player.x - BFA[i][0]) < Constants.PLAYER_RADIUS && player.y < BFA[i][3] + Constants.PLAYER_RADIUS && player.y > BFA[i][1] - Constants.PLAYER_RADIUS) {colls[0] = BFA[i][0] - Constants.PLAYER_RADIUS};
         //Y
         if (Math.abs(player.y - BFA[i][3]) < Constants.PLAYER_RADIUS && player.x < BFA[i][2] + Constants.PLAYER_RADIUS && player.x > BFA[i][0] - Constants.PLAYER_RADIUS) {colls[2] = BFA[i][3] + Constants.PLAYER_RADIUS};
-        if (Math.abs(BFA[i][1] - player.y) < Constants.PLAYER_RADIUS && player.x < BFA[i][2] + Constants.PLAYER_RADIUS && player.x > BFA[i][0] - Constants.PLAYER_RADIUS) {colls[3] = BFA[i][1] - Constants.PLAYER_RADIUS};
+        if (Math.abs(player.y - BFA[i][1]) < Constants.PLAYER_RADIUS && player.x < BFA[i][2] + Constants.PLAYER_RADIUS && player.x > BFA[i][0] - Constants.PLAYER_RADIUS) {colls[3] = BFA[i][1] - Constants.PLAYER_RADIUS};
 
-        //Distance if else--irrelevant
-        //return (Math.sqrt(Math.pow((player.x - centX), 2) + Math.pow((player.y - centY), 2)));
+        //what if instead I checked for a broad collision, then locked the players movement in said direction
+        //until there was no longer a collision
     }
     return colls;
 }
+
+function checkDashCollisions(player, dir){
+    let x, y;
+    //Before the player dashes, do a quick check to make sure they wont overlap with a collider in their final destination
+    //Basic Dash Function
+    // this.x += Constants.PLAYER_DASH_DISTANCE * Math.sin(this.mDir);
+    // this.y -= Constants.PLAYER_DASH_DISTANCE * Math.cos(this.mDir);
+
+    return (x, y);
+}
+
+exports.checkDashCollisions = checkDashCollisions;
 exports.applyCollisions = applyCollisions;
 exports.checkPlayerCollisions = checkPlayerCollisions;
 // module.exports = applyCollisions;
