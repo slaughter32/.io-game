@@ -1,6 +1,8 @@
 const Constants = require('../shared/constants');
 const Player = require('./player');
 const collisions = require('./collisions');
+const { kebabCase } = require('lodash');
+
 
 class Game{
     constructor(){
@@ -81,8 +83,9 @@ class Game{
         //Apply collisions, give players score for bullets that hit
         const destroyedBullets = collisions.applyCollisions(Object.values(this.players), this.bullets);
         destroyedBullets.forEach(b => {
-          if (this.players[b.parentID]) {
+          if (this.players[b.parentID] && b.playerCollision == true) {
             this.players[b.parentID].onDealtDamage();
+            this.players[b.parentID].halfDashCooldown();
           }
         });
         this.bullets = this.bullets.filter(bullet => !destroyedBullets.includes(bullet));

@@ -21,20 +21,24 @@ function applyCollisions(players, bullets){
         for (let j = 0; j < players.length; j++){
             const player = players[j];
             if (bullet.parentID !== player.id && player.distanceTo(bullet) <= Constants.PLAYER_RADIUS + Constants.BULLET_RADIUS){
-                destroyedBullets.push(bullet);
+
+                //needs to pass a seperate value to show that the bullet collided with a player
+                bullet.playerCollision = true;
+                destroyedBullets.push(bullet); //true = player collision --half dash cooldown in game where the bullet is destroyed
                 player.takeBulletDamage();
-                for (let x = 0; x < players.length; x++){
-                    players[x].halfDashCooldown(bullet.parentID);
-                }
                 break;
             }
         }
         //check for collisions with colliders in the map
-        /*
-        for (let o = 0; o <BFA.length; o++){
-            
+        for (let c = 0; c < BFA.length; c++){
+            //X
+            if (Math.abs(bullet.x - BFA[c][2]) < Constants.BULLET_RADIUS && bullet.y < BFA[c][3] && bullet.y > BFA[c][1]) {destroyedBullets.push(bullet)};
+            if (Math.abs(BFA[c][0] - bullet.x) < Constants.BULLET_RADIUS && bullet.y < BFA[c][3] && bullet.y > BFA[c][1]) {destroyedBullets.push(bullet)};
+            //Y
+            if (Math.abs(bullet.y - BFA[c][3]) < Constants.BULLET_RADIUS && bullet.x < BFA[c][2] && bullet.x > BFA[c][0]) {destroyedBullets.push(bullet)};
+            if (Math.abs(BFA[c][1] - bullet.y) < Constants.BULLET_RADIUS && bullet.x < BFA[c][2] && bullet.x > BFA[c][0]) {destroyedBullets.push(bullet)};
         }
-        */
+        
     }
     return destroyedBullets;
 }

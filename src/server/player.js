@@ -120,10 +120,8 @@ class Player extends ObjectClass{
         this.mDir = mouseDir;
         this.triedToDash = true;
     }
-    halfDashCooldown(id){
-        if (id === this.id){
-            this.dashCooldown = this.dashCooldown / 2;
-        }
+    halfDashCooldown(){
+        this.dashCooldown = this.dashCooldown / 2;
     }
     checkCollisions(colls){
         //console.log("checking player collisions: " + this.id);

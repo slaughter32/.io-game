@@ -6,6 +6,7 @@ class Fireball extends ObjectClass{
     constructor(parentID, x, y, dir){
         super(shortid(), x, y, dir, Constants.BULLET_SPEED);//shortid generates a network id for the object
         this.parentID = parentID;//tracks who created the bullet
+        this.playerCollision = false;
     }
 
     update(dt){
