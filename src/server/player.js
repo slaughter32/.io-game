@@ -111,7 +111,7 @@ class Player extends ObjectClass{
         this.triedToShoot = true;
     }
     dash(mouseDir, coord){
-        console.log("In player", coord[0], coord[1]);
+        //console.log("In player", coord[0], coord[1]);
         this.mDir = mouseDir;
         this.dashX = coord[0];//x
         this.dashY = coord[1];//y

@@ -103,9 +103,7 @@ function checkDashCollisions(player, dir){
         let temp = lineRect(player.x, player.y, x, y, BFA[i][0], BFA[i][1], BFA[i][2] - BFA[i][0], BFA[i][3] - BFA[i][1]);
         if (temp != false){hits.push(temp)}
     }
-    console.log("hits:", hits);
     for (let i = 0; i < hits.length; i++){
-        console.log("hits[i]:", hits[i]);
         let temp = Math.hypot(hits[i][0] - player.x, hits[i][1] - player.y)
         if (temp < currentShortest){
             currentShortest = temp;
@@ -165,13 +163,17 @@ function lineRect(x1,y1,x2,y2,rx,ry,rw,rh) {
     let xFind, yFind;
     if (x1 < rx + (rw / 2)){//right (player is to the left of the collision)
         xFind = lineLine(x1,y1,x2,y2, rx,ry,rx, ry+rh);
+        xFind[0] -= Constants.PLAYER_RADIUS;
     }else{//left
         xFind = lineLine(x1,y1,x2,y2, rx+rw,ry, rx+rw,ry+rh);
+        xFind[0] += Constants.PLAYER_RADIUS;
     }
     if (y1 < ry + (rh / 2)){//down
         yFind = lineLine(x1,y1,x2,y2, rx,ry, rx+rw,ry);
+        yFind[1] -= Constants.PLAYER_RADIUS;
     }else{//up
         yFind = lineLine(x1,y1,x2,y2, rx,ry+rh, rx+rw,ry+rh);
+        yFind[1] += Constants.PLAYER_RADIUS;
     }
    
     
