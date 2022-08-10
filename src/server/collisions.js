@@ -37,12 +37,12 @@ function applyCollisions(players, bullets){
             //unlike the player, direction of the collision is not relevant... This algorithm is a little more efficient
             circleDistanceX = Math.abs(bullet.x - centX);
             circleDistanceY = Math.abs(bullet.y - centY);
-            let width = BFA[c][2] - BFA[c][0];
-            let height = BFA[c][3] - BFA[c][1];
+            width = BFA[c][2] - BFA[c][0];
+            height = BFA[c][3] - BFA[c][1];
             if (circleDistanceX > (width/2 + Constants.BULLET_RADIUS)) {continue};
             if (circleDistanceY > (height/2 + Constants.BULLET_RADIUS)) {continue};
-            if (circleDistanceX <= (width/2)) {destroyedBullets.push(bullet)};
-            if (circleDistanceY <= (height/2)) {destroyedBullets.push(bullet)};
+            if (circleDistanceX <= (width/2)) {destroyedBullets.push(bullet); break};
+            if (circleDistanceY <= (height/2)) {destroyedBullets.push(bullet); break};
             cornerDistance_sq = (circleDistanceX - width/2)^2 + (circleDistanceY - height/2)^2;
             if (cornerDistance_sq <= (Constants.BULLET_RADIUS^2)){destroyedBullets.push(bullet)};
             //X
@@ -73,7 +73,7 @@ function checkPlayerCollisions(player){
         if (Math.abs(player.x - BFA[i][0]) < Constants.PLAYER_RADIUS && player.y < BFA[i][3] + Constants.PLAYER_RADIUS && player.y > BFA[i][1] - Constants.PLAYER_RADIUS) {colls[0] = BFA[i][0] - Constants.PLAYER_RADIUS};
         //Y
         if (Math.abs(player.y - BFA[i][3]) < Constants.PLAYER_RADIUS && player.x < BFA[i][2] + Constants.PLAYER_RADIUS && player.x > BFA[i][0] - Constants.PLAYER_RADIUS) {colls[2] = BFA[i][3] + Constants.PLAYER_RADIUS};
-        if (Math.abs(player.y - BFA[i][1]) < Constants.PLAYER_RADIUS && player.x < BFA[i][2] + Constants.PLAYER_RADIUS && player.x > BFA[i][0] - Constants.PLAYER_RADIUS) {colls[3] = BFA[i][1] - Constants.PLAYER_RADIUS};
+        if (Math.abs(player.y - BFA[i][1]) < Constants.PLAYER_RADIUS && player.x < BFA[i][2] + Constants.PLAYER_RADIUS && player.x > BFA[i][0] - Constants.PLAYER_RADIUS) {colls[3] = BFA[i][1] - Constants.PLAYER_RADIUS; break};
 
         //what if instead I checked for a broad collision, then locked the players movement in said direction
         //until there was no longer a collision
@@ -81,14 +81,39 @@ function checkPlayerCollisions(player){
     return colls;
 }
 
+//dash collisions are only checked every time the player tries to dash, making it much less computationally heavy overall
 function checkDashCollisions(player, dir){
     let x, y;
     //Before the player dashes, do a quick check to make sure they wont overlap with a collider in their final destination
     //Basic Dash Function
+    x = player.x + Constants.PLAYER_DASH_DISTANCE * Math.sin(dir);
+    y = player.y - Constants.PLAYER_DASH_DISTANCE * Math.cos(dir);
     // this.x += Constants.PLAYER_DASH_DISTANCE * Math.sin(this.mDir);
     // this.y -= Constants.PLAYER_DASH_DISTANCE * Math.cos(this.mDir);
-
-    return (x, y);
+    collision = false;
+    for (let i = 0; i < BFA.length; i++){
+        let centX = (BFA[i][0] + BFA[i][2]) / 2;
+        let centY = (BFA[i][1] + BFA[i][3]) / 2;
+        circleDistanceX = Math.abs(x - centX);
+        circleDistanceY = Math.abs(y - centY);
+        width = BFA[i][2] - BFA[i][0];
+        height = BFA[i][3] - BFA[i][1];
+        if (Math.hypot(centX - x, centY - y) > Constants.COLLISION_DIST){continue}; //no collision
+        if (circleDistanceX > (width/2 + Constants.PLAYER_RADIUS)) {continue}; //no collision
+        if (circleDistanceY > (height/2 + Constants.PLAYER_RADIUS)) {continue}; //no collision
+        if (circleDistanceX <= (width/2)) {collision = true; break}; //collision
+        if (circleDistanceY <= (height/2)) {collision = true; break}; //collision
+        cornerDistance_sq = (circleDistanceX - width/2)^2 + (circleDistanceY - height/2)^2;
+        collision = (cornerDistance_sq <= (Constants.PLAYER_RADIUS^2)); //maybe collision
+    }
+    if (!collision){
+        small = [x, y];
+        return small;
+    }else{
+        //line rectangle collision to find the earliest point between the player and their desired location to dash
+        return [player.x, player.y];
+        //push back to a point where there is no collision
+    }
 }
 
 exports.checkDashCollisions = checkDashCollisions;

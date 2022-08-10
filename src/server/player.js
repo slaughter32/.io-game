@@ -87,12 +87,14 @@ class Player extends ObjectClass{
 
             this.dashCooldown = Constants.PLAYER_DASH_COOLDOWN;
             this.triedToDash = false;
+            this.x = this.dashX;
+            this.y = this.dashY;
             //add some distance to the x and y coordinates of the parent component(super.x, super.y)
             //console.log(`player x: ${this.getX()} y: ${this.getY()}\nmouse x: ${this.mouseX} y: ${this.mouseY}`);
             //let d = Math.sqrt((this.getX() - this.))
             //console.log(`${this.username} Dashed.\nid: ${this.id}\ncoords: ${this.x}, ${this.y}`);
-            this.x += Constants.PLAYER_DASH_DISTANCE * Math.sin(this.mDir);
-            this.y -= Constants.PLAYER_DASH_DISTANCE * Math.cos(this.mDir);
+            // this.x += Constants.PLAYER_DASH_DISTANCE * Math.sin(this.mDir);
+            // this.y -= Constants.PLAYER_DASH_DISTANCE * Math.cos(this.mDir);
             //console.log(`\n${this.id} post dash coords\n${this.x}, ${this.y}`);
             //dash?
         }
@@ -108,10 +110,11 @@ class Player extends ObjectClass{
         this.mDir = mouseDir;
         this.triedToShoot = true;
     }
-    dash(mouseDir, x, y){
+    dash(mouseDir, coord){
+        //console.log(x[0], x[1]);
         this.mDir = mouseDir;
-        this.dashX = x;
-        this.dashY = y;
+        this.dashX = coord[0];//x
+        this.dashY = coord[1];//y
         this.triedToDash = true;
     }
     halfDashCooldown(){
