@@ -35,6 +35,7 @@ function applyCollisions(players, bullets){
             let centY = (BFA[c][1] + BFA[c][3]) / 2;
             if (Math.hypot(centX - bullet.x, centY - bullet.y) > Constants.COLLISION_DIST / 2){continue};
             //unlike the player, direction of the collision is not relevant... This algorithm is a little more efficient
+            //this is objectBFACollision but easier to leave as is for now
             circleDistanceX = Math.abs(bullet.x - centX);
             circleDistanceY = Math.abs(bullet.y - centY);
             width = BFA[c][2] - BFA[c][0];
@@ -45,12 +46,6 @@ function applyCollisions(players, bullets){
             if (circleDistanceY <= (height/2)) {destroyedBullets.push(bullet); break};
             cornerDistance_sq = (circleDistanceX - width/2)^2 + (circleDistanceY - height/2)^2;
             if (cornerDistance_sq <= (Constants.BULLET_RADIUS^2)){destroyedBullets.push(bullet)};
-            //X
-            // if (Math.abs(bullet.x - BFA[c][2]) < Constants.BULLET_RADIUS && bullet.y < BFA[c][3] && bullet.y > BFA[c][1]) {destroyedBullets.push(bullet)};
-            // if (Math.abs(bullet.x - BFA[c][0]) < Constants.BULLET_RADIUS && bullet.y < BFA[c][3] && bullet.y > BFA[c][1]) {destroyedBullets.push(bullet)};
-            // //Y
-            // if (Math.abs(bullet.y - BFA[c][3]) < Constants.BULLET_RADIUS && bullet.x < BFA[c][2] && bullet.x > BFA[c][0]) {destroyedBullets.push(bullet)};
-            // if (Math.abs(bullet.y - BFA[c][1]) < Constants.BULLET_RADIUS && bullet.x < BFA[c][2] && bullet.x > BFA[c][0]) {destroyedBullets.push(bullet)};
         }
         
     }
@@ -83,6 +78,48 @@ function checkPlayerCollisions(player){
 
 //dash collisions are only checked every time the player tries to dash, making it much less computationally heavy overall
 function checkDashCollisions(player, dir){
+    //ideas
+    //just push the player to the edge of the collider on the side they came from
+    //--problem, we dont know how frequent colliders are
+    //line rect collision and find nearest point
+    //--weakness, I still have to loop through all the colliders, so may as well just run player rect collision
+    //halfway, check collision, halfway halfway, check collision, repeat to certain depth
+    //--weakness, somewhat expensive, less precise when its less expensive, loops through all colliders multiple times
+
+    //chosen: line rect collision:
+    let x, y;
+    //Before the player dashes, do a quick check to make sure they wont overlap with a collider in their final destination
+    //Basic Dash Function
+    x = player.x + Constants.PLAYER_DASH_DISTANCE * Math.sin(dir);
+    y = player.y - Constants.PLAYER_DASH_DISTANCE * Math.cos(dir);
+
+
+    let hits = [];
+    let currentShortest = 99999999;//something way higher than will ever be returned
+    let final = [];
+    for (let i = 0; i < BFA.length; i++){
+        let centX = (BFA[i][0] + BFA[i][2]) / 2;
+        let centY = (BFA[i][1] + BFA[i][3]) / 2;
+        let temp = lineRect(player.x, player.y, x, y, BFA[i][0], BFA[i][1], BFA[i][2] - BFA[i][0], BFA[i][3] - BFA[i][1]);
+        if (temp != false){hits.push(temp)}
+    }
+    console.log("hits:", hits);
+    for (let i = 0; i < hits.length; i++){
+        console.log("hits[i]:", hits[i]);
+        let temp = Math.hypot(hits[i][0] - player.x, hits[i][1] - player.y)
+        if (temp < currentShortest){
+            currentShortest = temp;
+            final = hits[i];
+        }
+    }
+
+    if (hits.length > 0){
+        return final;
+    }else{
+        return [x, y];
+    }
+    //push back to a point where there is no collision
+    /*
     let x, y;
     //Before the player dashes, do a quick check to make sure they wont overlap with a collider in their final destination
     //Basic Dash Function
@@ -90,7 +127,19 @@ function checkDashCollisions(player, dir){
     y = player.y - Constants.PLAYER_DASH_DISTANCE * Math.cos(dir);
     // this.x += Constants.PLAYER_DASH_DISTANCE * Math.sin(this.mDir);
     // this.y -= Constants.PLAYER_DASH_DISTANCE * Math.cos(this.mDir);
-    collision = false;
+    whichBox = objectBFACollision(x, y); //if there is a collision whichBox is the collider there was a collision with
+    let collision = whichBox.length > 0 ? true : false;
+    if (!collision){
+        // returns the new, changed player coordinates
+        small = [x, y];
+        return small;
+    }else{
+
+    }
+    */
+}
+function objectBFACollision(x, y){
+    let whichBox = [];
     for (let i = 0; i < BFA.length; i++){
         let centX = (BFA[i][0] + BFA[i][2]) / 2;
         let centY = (BFA[i][1] + BFA[i][3]) / 2;
@@ -101,20 +150,68 @@ function checkDashCollisions(player, dir){
         if (Math.hypot(centX - x, centY - y) > Constants.COLLISION_DIST){continue}; //no collision
         if (circleDistanceX > (width/2 + Constants.PLAYER_RADIUS)) {continue}; //no collision
         if (circleDistanceY > (height/2 + Constants.PLAYER_RADIUS)) {continue}; //no collision
-        if (circleDistanceX <= (width/2)) {collision = true; break}; //collision
-        if (circleDistanceY <= (height/2)) {collision = true; break}; //collision
+        if (circleDistanceX <= (width/2)) {whichBox = BFA[i]; break}; //collision
+        if (circleDistanceY <= (height/2)) {whichBox = BFA[i]; break}; //collision
         cornerDistance_sq = (circleDistanceX - width/2)^2 + (circleDistanceY - height/2)^2;
         collision = (cornerDistance_sq <= (Constants.PLAYER_RADIUS^2)); //maybe collision
     }
-    if (!collision){
-        small = [x, y];
-        return small;
-    }else{
-        //line rectangle collision to find the earliest point between the player and their desired location to dash
-        return [player.x, player.y];
-        //push back to a point where there is no collision
-    }
+    return whichBox;
 }
+// LINE/RECTANGLE
+function lineRect(x1,y1,x2,y2,rx,ry,rw,rh) {
+
+    // check if the line has hit any of the rectangle's sides
+    // uses the Line/Line function below
+    let xFind, yFind;
+    if (x1 < rx + (rw / 2)){//right (player is to the left of the collision)
+        xFind = lineLine(x1,y1,x2,y2, rx,ry,rx, ry+rh);
+    }else{//left
+        xFind = lineLine(x1,y1,x2,y2, rx+rw,ry, rx+rw,ry+rh);
+    }
+    if (y1 < ry + (rh / 2)){//down
+        yFind = lineLine(x1,y1,x2,y2, rx,ry, rx+rw,ry);
+    }else{//up
+        yFind = lineLine(x1,y1,x2,y2, rx,ry+rh, rx+rw,ry+rh);
+    }
+   
+    
+  
+    // if ANY of the above are true, the line
+    // has hit the rectangle
+    if (xFind || yFind){
+        if (xFind && yFind){
+            if (Math.hypot(xFind[0]- x1, xFind[1] - y1) > Math.hypot(yFind[0]- x1, yFind[1] - y1)){
+                return xFind;
+            }else{
+                return yFind;
+            }
+        }else if (xFind){
+            return xFind
+        }else{
+            return yFind;
+        }
+
+    }
+    //console.log("no line collision");
+    return false;
+  }
+  // LINE/LINE
+  function lineLine(x1,y1,x2,y2,x3,y3,x4,y4) {
+  
+    // calculate the direction of the lines
+    uA = ((x4-x3)*(y1-y3) - (y4-y3)*(x1-x3)) / ((y4-y3)*(x2-x1) - (x4-x3)*(y2-y1));
+    uB = ((x2-x1)*(y1-y3) - (y2-y1)*(x1-x3)) / ((y4-y3)*(x2-x1) - (x4-x3)*(y2-y1));
+  
+    // if uA and uB are between 0-1, lines are colliding
+    if (uA >= 0 && uA <= 1 && uB >= 0 && uB <= 1) {
+  
+      // optionally, draw a circle where the lines meet
+      intersectionX = x1 + (uA * (x2-x1));
+      intersectionY = y1 + (uA * (y2-y1));
+      return [intersectionX, intersectionY];
+    }
+    return false;
+  }
 
 exports.checkDashCollisions = checkDashCollisions;
 exports.applyCollisions = applyCollisions;
