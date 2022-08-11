@@ -11,9 +11,22 @@ class Game{
         this.bullets = [];
         this.lastUpdateTime = Date.now();
         this.shouldSendUpdate = false;
+        this.createAilPoints();
         setInterval(this.update.bind(this), 1000 / 60);//1000ms in second, /60 for 60 updates/second
     }
-    
+    //create ail points at the start
+    createAilPoints(){
+      for (let i = 0; i < Constants.CAPTURE_POINT_QUANTITY; i++){
+
+      }
+      for (let i = 0; i < Constants.CAPTURE_POINT_QUANTITY; i++){
+
+      }
+      for (let i = 0; i < Constants.SPAWN_POINTS_QUANTITY; i++){
+
+      }
+    }
+
     addPlayer(socket, username){
         this.sockets[socket.id] = socket;
 

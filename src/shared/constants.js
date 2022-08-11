@@ -5,7 +5,7 @@ module.exports = Object.freeze({
     MAP_SIZE: 6400, //highly reccommended to also change the map size in order to make drawing colliders much easier
 
     COLLISION_DIST: 300,
-
+    //Player
     PLAYER_RADIUS: 20,
     PLAYER_MAX_HP: 3,
     PLAYER_SPEED: 400,
@@ -14,13 +14,34 @@ module.exports = Object.freeze({
     //Dashing
     PLAYER_DASH_COOLDOWN: 4,
     PLAYER_DASH_DISTANCE: 400,
-
+    //fireball
     BULLET_RADIUS: 10,
     BULLET_SPEED: 800, //must be different than player speed, even if just by 1... if this becomes a problem for some reason it can be solved but it makes 0 sense to have bullets travel the same speed as the player
     BULLET_DAMAGE: 1,
+    //capture point
+    CAPTURE_TIME: 10,//in seconds
+    MAX_ACTIVE: 1,
+    CAPTURE_POINT_QUANTITY: 50, //locations for them to spawn
+    CP_CAPTURE_RADIUS: 50,
+    CAPTURE_POINT_BONUS_GOLD: 1000,
+    //capture point requirements
+    CAPTURE_POINT_REQUIRED_GOLD: 2000, //gold required to have been profited by server
+    CAPTURE_POINT_REQUIRED_TIME: 300, //in seconds till next spawn criteria (5 mins)
+    //heal point
+    HEAL_POINT_TIME: 3,//in seconds
+    HEAL_POINT_RADIUS: 30,
+    HEAL_POINT_QUANTITY: 100, //locations for them to spawn
+    MAX_HEAL_POINTS: 15, //active number of heal points
+    HEAL_POINT_RESPAWN_TIME: 30, //in seconds, every 30 seconds a heal point should spawn at a random location if there are less than 15 active
+    HEAL_POINT_AMOUNT: 1, //how much hp the player should gain
+    //spawn point
+    SPAWN_POINTS_QUANTITY: 50,
 
-    SCORE_BULLET_HIT: 20,
-    SCORE_PER_SECOND: 0,
+    //Recall
+    RECALL_TIME: 6,//in seconds
+
+    SCORE_BULLET_HIT: 20,//being changed to elimination only
+    SCORE_PER_SECOND: 0,//useless old feature
     MSG_TYPES:{
         JOIN_GAME: 'join_game',
         GAME_UPDATE: 'update',

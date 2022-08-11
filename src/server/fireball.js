@@ -6,7 +6,7 @@ class Fireball extends ObjectClass{
     constructor(parentID, x, y, dir){
         super(shortid(), x, y, dir, Constants.BULLET_SPEED);//shortid generates a network id for the object
         this.parentID = parentID;//tracks who created the bullet
-        this.playerCollision = false;
+        this.playerCollision = false;//set to true under another script to allow the server to check if the bullet has hit a player and respond accordingly (half dash cooldown etc)
     }
 
     update(dt){

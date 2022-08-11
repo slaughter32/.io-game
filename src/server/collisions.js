@@ -136,7 +136,7 @@ function checkDashCollisions(player, dir){
     }
     */
 }
-function objectBFACollision(x, y){
+function objectBFACollision(x, y, radius){
     let whichBox = [];
     for (let i = 0; i < BFA.length; i++){
         let centX = (BFA[i][0] + BFA[i][2]) / 2;
@@ -146,14 +146,18 @@ function objectBFACollision(x, y){
         width = BFA[i][2] - BFA[i][0];
         height = BFA[i][3] - BFA[i][1];
         if (Math.hypot(centX - x, centY - y) > Constants.COLLISION_DIST){continue}; //no collision
-        if (circleDistanceX > (width/2 + Constants.PLAYER_RADIUS)) {continue}; //no collision
-        if (circleDistanceY > (height/2 + Constants.PLAYER_RADIUS)) {continue}; //no collision
+        if (circleDistanceX > (width/2 + radius)) {continue}; //no collision
+        if (circleDistanceY > (height/2 + radius)) {continue}; //no collision
         if (circleDistanceX <= (width/2)) {whichBox = BFA[i]; break}; //collision
         if (circleDistanceY <= (height/2)) {whichBox = BFA[i]; break}; //collision
         cornerDistance_sq = (circleDistanceX - width/2)^2 + (circleDistanceY - height/2)^2;
-        collision = (cornerDistance_sq <= (Constants.PLAYER_RADIUS^2)); //maybe collision
+        collision = (cornerDistance_sq <= (radius^2)); //maybe collision
     }
-    return whichBox;
+    if (whichBox.length > 0){
+        return true;
+    }
+    return false;
+   
 }
 // LINE/RECTANGLE
 function lineRect(x1,y1,x2,y2,rx,ry,rw,rh) {
@@ -215,6 +219,7 @@ function lineRect(x1,y1,x2,y2,rx,ry,rw,rh) {
     return false;
   }
 
+exports.objectBFACollision = objectBFACollision;
 exports.checkDashCollisions = checkDashCollisions;
 exports.applyCollisions = applyCollisions;
 exports.checkPlayerCollisions = checkPlayerCollisions;

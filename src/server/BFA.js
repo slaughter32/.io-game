@@ -210,6 +210,7 @@ generateColliders();
 //generate colliders only needs to run once at the start of the game
 
 function generateColliders(){
+    console.log("generating colliders");
     for (let i = 0; i < BFA.length; i++){
         let coordSet = [];//each temp contains 2 coordinates, and 4 elements.. 
                       //temp[0] = top left x, temp[1] = top left y, temp[2] = bottom right x, temp[3] = bottom right y
