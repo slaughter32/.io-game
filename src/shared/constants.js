@@ -10,6 +10,7 @@ module.exports = Object.freeze({
     PLAYER_MAX_HP: 3,
     PLAYER_SPEED: 400,
     PLAYER_FIRE_COOLDOWN: 1,//4 second cooldown between fireballs unless you hit a player in which you can instantly shoot again
+    
 
     //Dashing
     PLAYER_DASH_COOLDOWN: 4,
@@ -39,6 +40,13 @@ module.exports = Object.freeze({
 
     //Recall
     RECALL_TIME: 6,//in seconds
+    
+    //GOLD
+    PLAYER_STARTING_GOLD: 500, //how much gold a player should be spawned in with
+    GOLD_ON_KILL: 400,
+    INSURANCE_THRESHHOLD: 1000,
+    INSURANCE_PERCENT: .5,
+    
 
     SCORE_BULLET_HIT: 20,//being changed to elimination only
     SCORE_PER_SECOND: 0,//useless old feature

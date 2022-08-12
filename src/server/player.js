@@ -9,7 +9,7 @@ class Player extends ObjectClass{
         this.username = username;
         this.hp = Constants.PLAYER_MAX_HP;
         this.fireCooldown = 0;
-        this.score = 0;
+        this.score = Constants.PLAYER_STARTING_GOLD;
         this.triedToShoot = false;
         this.triedToDash = false;
         this.dashX;
@@ -124,11 +124,20 @@ class Player extends ObjectClass{
         //console.log("checking player collisions: " + this.id);
         this.canMove = colls;
     }
-    onDealtDamage(){
-        this.score += Constants.SCORE_BULLET_HIT;
+    onKill(gold){
+        this.score += gold;
     }
     setSpeed(speed){
         this.speed = speed;
+    }
+    getScore(){
+        return this.score;
+    }
+    onDeath(){
+        let insurance = (this.score - Constants.INSURANCE_THRESHHOLD) * Constants.INSURANCE_PERCENT;
+        if (insurance > 0){
+            this.score = insurance;
+        }
     }
     serializeForUpdate(){
         //console.log(this.id, this.direction, this.hp, this.fire);

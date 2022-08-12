@@ -24,6 +24,7 @@ function applyCollisions(players, bullets){
 
                 //needs to pass a seperate value to show that the bullet collided with a player
                 bullet.playerCollision = true;
+                bullet.hitID = player;
                 destroyedBullets.push(bullet); //true = player collision --half dash cooldown in game where the bullet is destroyed
                 player.takeBulletDamage();
                 break;

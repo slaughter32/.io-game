@@ -100,8 +100,14 @@ class Game{
         let destroyedBullets = collisions.applyCollisions(Object.values(this.players), this.bullets);
         destroyedBullets.forEach(b => {
           if (this.players[b.parentID] && b.playerCollision == true) {
-            this.players[b.parentID].onDealtDamage();
             this.players[b.parentID].halfDashCooldown();
+            const hitID = b.hitID;
+            if (hitID.hp <= 0){
+              let gold = Constants.GOLD_ON_KILL;
+              this.players[b.parentID].onKill(gold);
+              hitID.onDeath();
+            }
+
           }
         });
         this.bullets = this.bullets.filter(bullet => !destroyedBullets.includes(bullet));
