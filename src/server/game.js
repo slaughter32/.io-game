@@ -1,5 +1,7 @@
 const Constants = require('../shared/constants');
 const Player = require('./player');
+const CapturePoint = require('./capturepoint');
+const HealPoint = require('./healpoint');
 const collisions = require('./collisions');
 const { kebabCase } = require('lodash');
 
@@ -9,6 +11,8 @@ class Game{
         this.sockets = {};
         this.players = {};
         this.bullets = [];
+        this.capturepoints = [];
+        this.healpoints = [];
         this.lastUpdateTime = Date.now();
         this.shouldSendUpdate = false;
         this.createAilPoints();
@@ -16,14 +20,13 @@ class Game{
     }
     //create ail points at the start
     createAilPoints(){
+      //Create Capture Points
       for (let i = 0; i < Constants.CAPTURE_POINT_QUANTITY; i++){
-
+        this.capturepoints.push(new CapturePoint(Constants.CP_CAPTURE_RADIUS));
       }
-      for (let i = 0; i < Constants.CAPTURE_POINT_QUANTITY; i++){
-
-      }
-      for (let i = 0; i < Constants.SPAWN_POINTS_QUANTITY; i++){
-
+      //Create Heal Points
+      for (let i = 0; i < Constants.HEAL_POINT_QUANTITY; i++){
+        this.healpoints.push(new HealPoint(Constants.HEAL_POINT_RADIUS));
       }
     }
 

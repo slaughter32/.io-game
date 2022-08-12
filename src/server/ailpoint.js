@@ -11,13 +11,14 @@ class Ailpoint{
         this.generateRandomPoint();//immediately create it at a random point
     }
     generateRandomPoint(){
+        let found = false;
         while (!found){
             let max = Constants.MAP_SIZE;
             let x = Math.random() * max;
             let y = Math.random() * max;
             found = !collisions.objectBFACollision(x, y, this.radius);//true if collision, false if no collision
             if (found){
-                console.log("Found Coordinates: ", x, y);
+                //console.log("Found Coordinates: ", x, y);
                 this.x = x;
                 this.y = y;
             }
@@ -43,3 +44,5 @@ class Ailpoint{
         return this.radius;
     }
 }
+
+module.exports = Ailpoint;

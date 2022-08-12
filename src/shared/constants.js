@@ -35,7 +35,7 @@ module.exports = Object.freeze({
     HEAL_POINT_RESPAWN_TIME: 30, //in seconds, every 30 seconds a heal point should spawn at a random location if there are less than 15 active
     HEAL_POINT_AMOUNT: 1, //how much hp the player should gain
     //spawn point
-    SPAWN_POINTS_QUANTITY: 50,
+    //SPAWN_POINTS_QUANTITY: 50, not needed, a spawn point will be created for each player when they join
 
     //Recall
     RECALL_TIME: 6,//in seconds

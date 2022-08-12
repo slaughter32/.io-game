@@ -4,6 +4,7 @@ const Constants = require('../shared/constants');
 class CapturePoint extends AilPoint{
     constructor(radius){
         super(radius);
+        this.active = false;
         this.beingCaptured = false;
         this.timeLeft = Constants.CAPTURE_TIME;
     }
@@ -19,3 +20,4 @@ class CapturePoint extends AilPoint{
         };
     }
 }
+module.exports = CapturePoint;
