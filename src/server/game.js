@@ -13,6 +13,12 @@ class Game{
         this.bullets = [];
         this.capturepoints = [];
         this.healpoints = [];
+        this.activeCapturePoints = [];
+        this.activeHealPoints = [];
+        this.serverProfitSinceCap = 0;
+        this.timeSinceLastCap = 0;
+        this.lastActiveCP = 0;
+        this.timeTillHP = Constants.HEAL_POINT_RESPAWN_TIME;
         this.lastUpdateTime = Date.now();
         this.shouldSendUpdate = false;
         this.createAilPoints();
@@ -24,6 +30,10 @@ class Game{
       for (let i = 0; i < Constants.CAPTURE_POINT_QUANTITY; i++){
         this.capturepoints.push(new CapturePoint(Constants.CP_CAPTURE_RADIUS));
       }
+      //initialize first capturepoint
+      this.activeCapturePoints.push(this.capturepoints[0]);
+      this.lastActiveCP = 0;
+      console.log("First Capture Point Location: ", this.capturepoints[0].x, this.capturepoints[0].y);
       //Create Heal Points
       for (let i = 0; i < Constants.HEAL_POINT_QUANTITY; i++){
         this.healpoints.push(new HealPoint(Constants.HEAL_POINT_RADIUS));
@@ -70,6 +80,49 @@ class Game{
         const now = Date.now();
         const dt = (now - this.lastUpdateTime) / 1000;
         this.lastUpdateTime = now;
+
+        this.timeSinceLastCap += dt;
+        this.timeTillHP -= dt;
+        //set active capture and heal points
+        if (this.timeSinceLastCap >= Constants.CAPTURE_POINT_REQUIRED_TIME && this.serverProfitSinceCap >= Constants.CAPTURE_POINT_REQUIRED_GOLD && this.activeCapturePoints.length <= 0){
+          if (this.lastActiveCP < this.activeCapturePoints.length){
+            this.lastActiveCP++;
+          }else{
+            this.lastActiveCP = 0;
+          }
+          this.activeCapturePoints.push(this.capturepoints[this.lastActiveCP]);
+        }
+
+        if (this.activeHealPoints.length < Constants.MAX_HEAL_POINTS && this.timeTillHP <= 0){
+          this.timeTillHP = Constants.HEAL_POINT_RESPAWN_TIME;
+          this.activeHealPoints.push(this.healpoints.pop());
+        }
+
+        //check the status of active healpoints/capturepoints
+        for (let i = 0; i < this.activeCapturePoints.length; i++){
+          //console.log(this.activeCapturePoints[i].timeLeft);
+          const activePoint = this.activeCapturePoints[i];
+          activePoint.collision(Object.values(this.players));
+          activePoint.update(dt);
+          //console.log(activePoint);
+          if (activePoint.timeLeft <= 0){
+            activePoint.currentPlayer.score += Constants.CAPTURE_POINT_BONUS_GOLD;
+            this.activeCapturePoints.pop();
+            this.serverProfitSinceCap = 0;
+          }
+          
+        }
+        for (let i = 0; i < this.activeHealPoints.length; i++){
+          const activePoint = this.activeHealPoints[i];
+          activePoint.collision(Object.values(this.players));
+          activePoint.update(dt);
+          //console.log(activePoint);
+          if (activePoint.timeLeft <= 0){
+            activePoint.currentPlayer.hp += Constants.HEAL_POINT_AMOUNT;
+            this.activeHealPoints[i].pop();
+          }
+        }
+
 
         //update each bullet
         const bulletsToRemove = [];
@@ -160,6 +213,8 @@ class Game{
           me: player.serializeForUpdate(),
           others: nearbyPlayers.map(p => p.serializeForUpdate()),
           bullets: nearbyBullets.map(b => b.serializeForUpdate()),
+          capturepoints: this.activeCapturePoints,
+          healpoints: this.activeHealPoints,
           leaderboard,
         };
     }

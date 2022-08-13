@@ -8,6 +8,10 @@ class Ailpoint{
         this.radius = radius;
         this.x;
         this.y;
+        this.active = false;
+        this.currentPlayer = null;
+        this.timeLeft;
+        this.timeAmount;//because im a terrible programmer this gets set in the child
         this.generateRandomPoint();//immediately create it at a random point
     }
     generateRandomPoint(){
@@ -22,6 +26,22 @@ class Ailpoint{
                 this.x = x;
                 this.y = y;
             }
+        }
+    }
+    collision(players){
+        let playersInside = 0;
+        for (let i = 0; i < players.length; i++){
+            //console.log("player xy object xy\n", players[i].x, players[i].y, "\n", this.x, this.y);
+            if (collisions.circleCircle(this.x, this.y, players[i].x, players[i].y, this.radius, Constants.PLAYER_RADIUS)){
+                playersInside++;
+                this.currentPlayer = players[i];
+            }
+        }
+        if (playersInside == 1){
+            this.active = true;
+        }else{
+            this.active = false;
+            this.timeLeft = this.timeAmount;
         }
     }
     serializeForUpdate(){
@@ -42,6 +62,12 @@ class Ailpoint{
     }
     getRadius(){
         return this.radius;
+    }
+    getActive(){
+        return this.active;
+    }
+    getTimeLeft(){
+        return this.timeLeft;
     }
 }
 

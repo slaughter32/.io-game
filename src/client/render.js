@@ -1,6 +1,6 @@
 //this file is relatively temporary as lots needs to change... Started off a baseline .io project example.
 
-import { constant } from 'lodash';
+import { constant, kebabCase } from 'lodash';
 import { debounce } from 'throttle-debounce';
 import { getAsset } from './assets';
 import { getCurrentState } from './state';
@@ -24,7 +24,7 @@ function setCanvasDimensions() {
 }
 let animationFrameRequestId;
 function render() {
-  const { me, others, bullets, fire } = getCurrentState();
+  const { me, others, bullets, capturepoints, healpoints } = getCurrentState();
   if (me) {//only does this for the local player, not other clients
     //console.log(`fire: ${fire}`);
     // Draw background
@@ -37,6 +37,9 @@ function render() {
 
     // Draw all bullets
     bullets.forEach(renderBullet.bind(null, me));
+
+    //Draw Capture and Heal points
+    renderCapAndHealPoints(capturepoints, healpoints, me, me);
 
     // Draw all players
     renderPlayer(me, me);
@@ -202,6 +205,27 @@ function renderBullet(me, bullet) {
     BULLET_RADIUS * 2,
     BULLET_RADIUS * 2,
   );
+}
+
+function renderCapAndHealPoints(capturepoints, healpoints, me, player){
+  if (me == player){
+    for (let i = 0; i < capturepoints.length; i++){
+      context.fillStyle = "blue";
+      context.beginPath();
+      context.arc(capturepoints[i].x + (canvas.width / 2) - me.x, capturepoints[i].y + (canvas.height / 2) - me.y, capturepoints[i].radius, 0, 2 * Math.PI);
+      context.fill();
+      context.stroke();
+    }
+    for (let i = 0; i < healpoints.length; i++){
+      //console.log(healpoints[i]);
+      context.fillStyle = "green";
+      context.beginPath();
+      context.arc(healpoints[i].x + (canvas.width / 2) - me.x, healpoints[i].y + (canvas.height / 2) - me.y, healpoints[i].radius, 0, 2 * Math.PI);
+      context.fill();
+      context.stroke();
+    }
+  }
+
 }
 
 function renderMainMenu() {

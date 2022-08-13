@@ -4,12 +4,13 @@ const Constants = require('../shared/constants');
 class HealPoint extends AilPoint{
     constructor(radius){
         super(radius);
-        this.active = false;
-        this.beingTaken = false;
-        this.timeLeft = Constants.HEAL_POINT_TIME;
+        super.timeLeft = Constants.HEAL_POINT_TIME;
+        super.timeAmount = Constants.HEAL_POINT_TIME;
     }
     update(dt){
-        
+        if (super.active){
+            super.timeLeft -= dt;
+        }
     }
     serializeForUpdate(){
         //console.log(this.id, this.direction, this.hp, this.fire);

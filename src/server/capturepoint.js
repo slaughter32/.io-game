@@ -4,12 +4,15 @@ const Constants = require('../shared/constants');
 class CapturePoint extends AilPoint{
     constructor(radius){
         super(radius);
-        this.active = false;
-        this.beingCaptured = false;
-        this.timeLeft = Constants.CAPTURE_TIME;
+        super.timeLeft = Constants.CAPTURE_TIME;
+        super.timeAmount = Constants.CAPTURE_TIME;
+        //this.beingCaptured = false; replaced by this.active because points being active is handled naturally as they are not
+        //sent to the player or updated if they are inactive
     }
     update(dt){
-        
+        if (this.active){
+            this.timeLeft -= dt;
+        }
     }
     serializeForUpdate(){
         //console.log(this.id, this.direction, this.hp, this.fire);

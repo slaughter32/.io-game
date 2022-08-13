@@ -1,4 +1,4 @@
-const { constant } = require('lodash');
+const { constant, truncate } = require('lodash');
 const { ModuleFilenameHelpers } = require('webpack');
 const Constants = require('../shared/constants');
 const getBFA = require('./BFA');
@@ -158,7 +158,15 @@ function objectBFACollision(x, y, radius){
         return true;
     }
     return false;
-   
+}
+function circleCircle(x1, y1, x2, y2, r1, r2){
+    const dx = x1 - x2;
+    const dy = y1 - y2;
+    const dist =  Math.sqrt(dx * dx + dy * dy);
+    if (dist < r1 + r2){
+        return true;
+    }
+    return false;
 }
 // LINE/RECTANGLE
 function lineRect(x1,y1,x2,y2,rx,ry,rw,rh) {
@@ -220,6 +228,7 @@ function lineRect(x1,y1,x2,y2,rx,ry,rw,rh) {
     return false;
   }
 
+exports.circleCircle = circleCircle;
 exports.objectBFACollision = objectBFACollision;
 exports.checkDashCollisions = checkDashCollisions;
 exports.applyCollisions = applyCollisions;
