@@ -32,6 +32,8 @@ const io = socketio(server);
 // Listen for socket.io connections
 io.on('connection', socket => {
   console.log('Player connected!', socket.id);
+  currentUsers++;
+  console.log("Current Players:", currentUsers);
 
   socket.on(Constants.MSG_TYPES.JOIN_GAME, joinGame);
   socket.on(Constants.MSG_TYPES.INPUT, handleInput);
@@ -44,8 +46,6 @@ io.on('connection', socket => {
 const game = new Game();
 
 function joinGame(username) {
-  currentUsers++;
-  console.log("Current Players:", currentUsers);
   game.addPlayer(this, username);
 }
 

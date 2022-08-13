@@ -85,6 +85,9 @@ class Game{
 
         this.timeSinceLastCap += dt;
         this.timeTillHP -= dt;
+        if (Constants.CAPTURE_POINT_REQUIRED_TIME - this.timeSinceLastCap <= 60 && this.messageTime == Constants.GLOBAL_MESSAGE_LENGTH){
+          this.globalServerMessage = "Capture Point Spawning in 1 Minute";
+        }
         //set active capture and heal points
         if (this.timeSinceLastCap >= Constants.CAPTURE_POINT_REQUIRED_TIME && this.serverProfitSinceCap >= Constants.CAPTURE_POINT_REQUIRED_GOLD && this.activeCapturePoints.length <= 0){
           if (this.lastActiveCP < this.activeCapturePoints.length){
@@ -93,7 +96,7 @@ class Game{
             this.lastActiveCP = 0;
           }
           this.activeCapturePoints.push(this.capturepoints[this.lastActiveCP]);
-          this.globalServerMessage = `New Capture Point! Win Capture Point for ${Constants.CAPTURE_POINT_BONUS_GOLD} Gold!`;
+          this.globalServerMessage = `Objective Spawned, capture for ${Constants.CAPTURE_POINT_BONUS_GOLD} Gold!`;
           this.messageTime = Constants.GLOBAL_MESSAGE_LENGTH;
         }
 
@@ -122,8 +125,10 @@ class Game{
           activePoint.update(dt);
           //console.log(activePoint);
           if (activePoint.timeLeft <= 0){
-            activePoint.currentPlayer.hp += Constants.HEAL_POINT_AMOUNT;
-            this.activeHealPoints.pop(i);
+            if (activePoint.currentPlayer.hp < Constants.PLAYER_MAX_HP){
+              activePoint.currentPlayer.hp += Constants.HEAL_POINT_AMOUNT;
+            }
+            this.activeHealPoints.pop(activePoint);
           }
         }
         //global server message

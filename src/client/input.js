@@ -1,5 +1,4 @@
 //while the example project only needs direction and shooting, I need more than this... will have to update position based on current input too
-import Player from "../server/player";
 import { updateDirection } from "./networking";
 import { tryShoot } from "./networking";
 import { tryDash } from "./networking";

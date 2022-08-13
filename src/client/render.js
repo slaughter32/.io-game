@@ -13,6 +13,7 @@ const { PLAYER_RADIUS, PLAYER_MAX_HP, BULLET_RADIUS, MAP_SIZE } = Constants;
 // Get the canvas graphics context
 const canvas = document.getElementById('game-canvas');
 const context = canvas.getContext('2d');
+const scale = 1.5;
 setCanvasDimensions();
 
 function setCanvasDimensions() {
@@ -39,11 +40,12 @@ function render() {
     renderCapAndHealPoints(capturepoints, healpoints, me, me);
 
     //server global message
-    console.log(message);
-    context.font = "30px Comic Sans MS";
-    context.fillStyle = "red";
-    context.textAlign = "center";
-    context.fillText(message, canvas.width/2, 30);
+    let fontString = `${canvas.width / 50}px Comic Sans MS`;
+    context.font = fontString;
+    context.fillStyle = "white";
+    context.textAlign = "left";
+    context.fillText(message, 231 * scale, 30);
+    context.stroke();
 
     // Draw all bullets
     bullets.forEach(renderBullet.bind(null, me));
@@ -136,7 +138,6 @@ function renderPlayer(me, player) {
  if (me == player){
   let image = '';
   let offset = 3;
-  let scale = 1.5;
   //dashCooldown
   if (dash > 0){
     //console.log(`fire cooldown: ${fireCooldown}`);
@@ -153,6 +154,10 @@ function renderPlayer(me, player) {
     if (me.hp == 3){ image = 'hud3hp.png'};
     if (me.hp == 2){ image = 'hud2hp.png'};
     if (me.hp == 1){ image = 'hud1hp.png'};
+    if (image == ''){
+      console.log("something wrong with player hp: ", me.hp);
+      image = 'hud1hp.png';
+    }
     context.drawImage(
       getAsset(image),
       offset,

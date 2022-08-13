@@ -89,6 +89,7 @@ class Player extends ObjectClass{
             this.triedToDash = false;
             this.x = this.dashX;
             this.y = this.dashY;
+            this.fireCooldown = 0; // let the player shoot again right after dashing
             //add some distance to the x and y coordinates of the parent component(super.x, super.y)
             //console.log(`player x: ${this.getX()} y: ${this.getY()}\nmouse x: ${this.mouseX} y: ${this.mouseY}`);
             //let d = Math.sqrt((this.getX() - this.))
@@ -126,6 +127,8 @@ class Player extends ObjectClass{
     }
     onKill(gold){
         this.score += gold;
+        this.hp = Constants.PLAYER_MAX_HP;
+        this.dashCooldown = 0;
     }
     setSpeed(speed){
         this.speed = speed;
