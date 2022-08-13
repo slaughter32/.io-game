@@ -8,8 +8,8 @@ class HealPoint extends AilPoint{
         super.timeAmount = Constants.HEAL_POINT_TIME;
     }
     update(dt){
-        if (super.active){
-            super.timeLeft -= dt;
+        if (this.active){
+            this.timeLeft -= dt;
         }
     }
     serializeForUpdate(){
