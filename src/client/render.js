@@ -24,7 +24,7 @@ function setCanvasDimensions() {
 }
 let animationFrameRequestId;
 function render() {
-  const { me, others, bullets, capturepoints, healpoints } = getCurrentState();
+  const { me, others, bullets, capturepoints, healpoints, message } = getCurrentState();
   if (me) {//only does this for the local player, not other clients
     //console.log(`fire: ${fire}`);
     // Draw background
@@ -35,11 +35,18 @@ function render() {
     context.lineWidth = 1;
     context.strokeRect(canvas.width / 2 - me.x, canvas.height / 2 - me.y, MAP_SIZE, MAP_SIZE);
 
-    // Draw all bullets
-    bullets.forEach(renderBullet.bind(null, me));
-
     //Draw Capture and Heal points
     renderCapAndHealPoints(capturepoints, healpoints, me, me);
+
+    //server global message
+    console.log(message);
+    context.font = "30px Comic Sans MS";
+    context.fillStyle = "red";
+    context.textAlign = "center";
+    context.fillText(message, canvas.width/2, 30);
+
+    // Draw all bullets
+    bullets.forEach(renderBullet.bind(null, me));
 
     // Draw all players
     renderPlayer(me, me);

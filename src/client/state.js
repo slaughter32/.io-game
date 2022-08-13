@@ -69,6 +69,7 @@ export function getCurrentState() {
       bullets: interpolateObjectArray(baseUpdate.bullets, next.bullets, ratio),
       capturepoints: baseUpdate.capturepoints,
       healpoints: baseUpdate.healpoints,
+      message: baseUpdate.message,
     };
   }
 }

@@ -46,7 +46,9 @@ module.exports = Object.freeze({
     GOLD_ON_KILL: 400,
     INSURANCE_THRESHHOLD: 1000,
     INSURANCE_PERCENT: .5,
-    
+
+    //other
+    GLOBAL_MESSAGE_LENGTH: 10,
 
     SCORE_BULLET_HIT: 20,//being changed to elimination only
     SCORE_PER_SECOND: 0,//useless old feature

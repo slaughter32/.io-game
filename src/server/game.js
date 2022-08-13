@@ -19,6 +19,8 @@ class Game{
         this.timeSinceLastCap = 0;
         this.lastActiveCP = 0;
         this.timeTillHP = Constants.HEAL_POINT_RESPAWN_TIME;
+        this.globalServerMessage = '';
+        this.messageTime = Constants.GLOBAL_MESSAGE_LENGTH;
         this.lastUpdateTime = Date.now();
         this.shouldSendUpdate = false;
         this.createAilPoints();
@@ -31,9 +33,9 @@ class Game{
         this.capturepoints.push(new CapturePoint(Constants.CP_CAPTURE_RADIUS));
       }
       //initialize first capturepoint
-      this.activeCapturePoints.push(this.capturepoints[0]);
-      this.lastActiveCP = 0;
-      console.log("First Capture Point Location: ", this.capturepoints[0].x, this.capturepoints[0].y);
+      //this.activeCapturePoints.push(this.capturepoints[0]);
+      this.lastActiveCP = -1;
+      //console.log("First Capture Point Location: ", this.capturepoints[0].x, this.capturepoints[0].y);
       //Create Heal Points
       for (let i = 0; i < Constants.HEAL_POINT_QUANTITY; i++){
         this.healpoints.push(new HealPoint(Constants.HEAL_POINT_RADIUS));
@@ -91,6 +93,8 @@ class Game{
             this.lastActiveCP = 0;
           }
           this.activeCapturePoints.push(this.capturepoints[this.lastActiveCP]);
+          this.globalServerMessage = `New Capture Point! Win Capture Point for ${Constants.CAPTURE_POINT_BONUS_GOLD} Gold!`;
+          this.messageTime = Constants.GLOBAL_MESSAGE_LENGTH;
         }
 
         if (this.activeHealPoints.length < Constants.MAX_HEAL_POINTS && this.timeTillHP <= 0){
@@ -119,10 +123,17 @@ class Game{
           //console.log(activePoint);
           if (activePoint.timeLeft <= 0){
             activePoint.currentPlayer.hp += Constants.HEAL_POINT_AMOUNT;
-            this.activeHealPoints[i].pop();
+            this.activeHealPoints.pop(i);
           }
         }
-
+        //global server message
+        if (this.globalServerMessage != ''){
+          this.messageTime -= dt;
+          if (this.messageTime <= 0){
+            this.globalServerMessage = '';
+            messageTime = Constants.GLOBAL_MESSAGE_LENGTH;
+          }
+        }
 
         //update each bullet
         const bulletsToRemove = [];
@@ -159,6 +170,12 @@ class Game{
               let gold = Constants.GOLD_ON_KILL;
               this.players[b.parentID].onKill(gold);
               hitID.onDeath();
+              let insurance = (hitID.score - 1000) / 2;
+              if (insurance > 0){
+                this.serverProfitSinceCap += hitID.score - 400 - insurance;
+              }else{
+                this.serverProfitSinceCap += hitID.score - 400;
+              }
             }
 
           }
@@ -215,6 +232,7 @@ class Game{
           bullets: nearbyBullets.map(b => b.serializeForUpdate()),
           capturepoints: this.activeCapturePoints,
           healpoints: this.activeHealPoints,
+          message: this.globalServerMessage,
           leaderboard,
         };
     }

@@ -8,7 +8,7 @@ class HealPoint extends AilPoint{
         super.timeAmount = Constants.HEAL_POINT_TIME;
     }
     update(dt){
-        if (this.active){
+        if (this.active && this.currentPlayer.hp < 3){
             this.timeLeft -= dt;
         }
     }
