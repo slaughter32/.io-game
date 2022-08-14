@@ -19,7 +19,7 @@ class CapturePoint extends AilPoint{
         return{
             ...(super.serializeForUpdate()),
             timeLeft: this.timeLeft,
-            beingCaptured: this.beingCaptured,
+            active: this.active,
         };
     }
 }

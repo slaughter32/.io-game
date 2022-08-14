@@ -18,7 +18,7 @@ class Game{
         this.serverProfitSinceCap = 0;
         this.timeSinceLastCap = 0;
         this.lastActiveCP = 0;
-        this.timeTillHP = Constants.HEAL_POINT_RESPAWN_TIME;
+        this.timeTillHP = 0;
         this.globalServerMessage = '';
         this.messageTime = Constants.GLOBAL_MESSAGE_LENGTH;
         this.lastUpdateTime = Date.now();
@@ -83,7 +83,10 @@ class Game{
         const dt = (now - this.lastUpdateTime) / 1000;
         this.lastUpdateTime = now;
 
-        this.timeSinceLastCap += dt;
+        if (this.serverProfitSinceCap >= Constants.CAPTURE_POINT_REQUIRED_GOLD){
+          this.timeSinceLastCap += dt;//countdown starts
+          this.globalServerMessage = "Capture Point Spawning in 5 Minutes";
+        }
         this.timeTillHP -= dt;
         if (Constants.CAPTURE_POINT_REQUIRED_TIME - this.timeSinceLastCap <= 60 && this.messageTime == Constants.GLOBAL_MESSAGE_LENGTH){
           this.globalServerMessage = "Capture Point Spawning in 1 Minute";
@@ -114,6 +117,7 @@ class Game{
           //console.log(activePoint);
           if (activePoint.timeLeft <= 0){
             activePoint.currentPlayer.score += Constants.CAPTURE_POINT_BONUS_GOLD;
+            this.globalServerMessage = "Objective Has Been Taken";
             this.activeCapturePoints.pop();
             this.serverProfitSinceCap = 0;
           }
@@ -128,7 +132,7 @@ class Game{
             if (activePoint.currentPlayer.hp < Constants.PLAYER_MAX_HP){
               activePoint.currentPlayer.hp += Constants.HEAL_POINT_AMOUNT;
             }
-            this.activeHealPoints.pop(activePoint);
+            this.healpoints.push(this.activeHealPoints.pop(activePoint));
           }
         }
         //global server message
@@ -136,7 +140,7 @@ class Game{
           this.messageTime -= dt;
           if (this.messageTime <= 0){
             this.globalServerMessage = '';
-            messageTime = Constants.GLOBAL_MESSAGE_LENGTH;
+            this.messageTime = Constants.GLOBAL_MESSAGE_LENGTH;
           }
         }
 

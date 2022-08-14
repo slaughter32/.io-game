@@ -49,6 +49,7 @@ class Ailpoint{
             x: this.x,
             y: this.y,
             radius: this.radius,
+            currentPlayer: this.currentPlayer,
         };
     }
 

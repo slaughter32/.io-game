@@ -44,7 +44,7 @@ function render() {
     context.font = fontString;
     context.fillStyle = "white";
     context.textAlign = "left";
-    context.fillText(message, 231 * scale, 30);
+    context.fillText(message, (231 * scale) + 10, 30);
     context.stroke();
 
     // Draw all bullets
@@ -139,15 +139,28 @@ function renderPlayer(me, player) {
   let image = '';
   let offset = 3;
   //dashCooldown
-  if (dash > 0){
-    //console.log(`fire cooldown: ${fireCooldown}`);
+  if (dash <= 0){
     context.fillStyle = 'aqua';
     context.fillRect(
       offset + 80 * scale,
       offset + 23 * scale,
-      90 * 2 * dash,
+      185,
       10 * scale,
     );
+  }else{
+    context.fillStyle = 'aqua';
+    context.fillRect(
+      (offset + 80 * scale),
+      offset + 23 * scale,
+      185 * (1 - dash),
+      10 * scale,
+    );
+    // context.fillRect(
+    //   offset + 80 * scale,
+    //   offset + 23 * scale,
+    //   90 * 2 * dash,
+    //   10 * scale,
+    // );
   }
 
   if (me.hp > 0){
@@ -227,6 +240,19 @@ function renderCapAndHealPoints(capturepoints, healpoints, me, player){
       context.arc(capturepoints[i].x + (canvas.width / 2) - me.x, capturepoints[i].y + (canvas.height / 2) - me.y, capturepoints[i].radius, 0, 2 * Math.PI);
       context.fill();
       context.stroke();
+      //capture progress bar
+      if (capturepoints[i].active){
+        if (me == capturepoints[i].currentPlayer){
+
+        }else{
+          context.fillRect(
+            canvasX - (Constants.CP_CAPTURE_RADIUS * 1.25) + Constants.CP_CAPTURE_RADIUS * 2.5 * capturepoints[i].timeLeft / Constants.CAPTURE_TIME,
+            canvasY - Constants.CP_CAPTURE_RADIUS - 8,
+            Constants.CP_CAPTURE_RADIUS * 2.5 * (1 - capturepoints[i].timeLeft / Constants.CAPTURE_TIME),
+            6,
+          );
+        }
+      }
     }
     for (let i = 0; i < healpoints.length; i++){
       //console.log(healpoints[i]);
@@ -235,9 +261,32 @@ function renderCapAndHealPoints(capturepoints, healpoints, me, player){
       context.arc(healpoints[i].x + (canvas.width / 2) - me.x, healpoints[i].y + (canvas.height / 2) - me.y, healpoints[i].radius, 0, 2 * Math.PI);
       context.fill();
       context.stroke();
+      //capture progress bar
+      console.log(healpoints[i]);
+      let StringID = me.id;
+      StringID = StringID.slice(0, -3);//this is a filthy solution, absolutely disgusting.. but it works
+      //console.log(StringID);
+      if (healpoints[i].active){
+        //console.log('point id', healpoints[i].currentPlayer.id);
+        //console.log(me == healpoints[i].currentPlayer);
+        if (StringID == healpoints[i].currentPlayer.id){
+          context.fillRect(
+            0,
+            82 * scale,
+            231 * scale * (healpoints[i].timeLeft / Constants.HEAL_POINT_TIME),
+            30 * scale,
+          );
+        }else{
+          context.fillRect(
+            healpoints[i].x + (canvas.width / 2) - me.x - Constants.HEAL_POINT_RADIUS,
+            healpoints[i].y + (canvas.height / 2) - me.y - Constants.HEAL_POINT_RADIUS * 1.5,
+            Constants.HEAL_POINT_RADIUS * 2 * (healpoints[i].timeLeft / Constants.HEAL_POINT_TIME),
+            10,
+          );
+        }
+      }
     }
   }
-
 }
 
 function renderMainMenu() {

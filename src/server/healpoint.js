@@ -17,7 +17,7 @@ class HealPoint extends AilPoint{
         return{
             ...(super.serializeForUpdate()),
             timeLeft: this.timeLeft,
-            beingCaptured: this.beingTaken,
+            active: this.active,
         };
     }
 }
