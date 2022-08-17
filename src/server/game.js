@@ -33,9 +33,9 @@ class Game{
         this.capturepoints.push(new CapturePoint(Constants.CP_CAPTURE_RADIUS));
       }
       //initialize first capturepoint
-      this.activeCapturePoints.push(this.capturepoints[0]);
-      this.lastActiveCP = 0;
-      //this.lastActiveCP = -1;
+      //this.activeCapturePoints.push(this.capturepoints[0]);
+      //this.lastActiveCP = 0;
+      this.lastActiveCP = -1;
       //console.log("First Capture Point Location: ", this.capturepoints[0].x, this.capturepoints[0].y);
       //Create Heal Points
       for (let i = 0; i < Constants.HEAL_POINT_QUANTITY; i++){
