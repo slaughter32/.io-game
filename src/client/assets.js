@@ -1,4 +1,4 @@
-const ASSET_NAMES = ['magechar.png', 'smallfireball.png', 'mainmapio.png', 'hud3hp.png', 'hud2hp.png', 'hud1hp.png'];
+const ASSET_NAMES = ['magechar.png', 'smallfireball.png', 'mainmapio.png', 'hud3hp.png', 'hud2hp.png', 'hud1hp.png', 'CPArrow.png', 'magespritesheetfinal.png'];
 
 const assets = {};
 const downloadPromise = Promise.all(ASSET_NAMES.map(downloadAsset));

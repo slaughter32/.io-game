@@ -1,4 +1,4 @@
-import { updateLeaderboard } from './leaderboard';
+//import { updateLeaderboard } from './leaderboard';
 
 // The "current" state will always be RENDER_DELAY ms behind server time.
 // This makes gameplay smoother and lag less noticeable.
@@ -19,7 +19,7 @@ export function processGameUpdate(update) {
     gameStart = Date.now();
   }
   gameUpdates.push(update);
-  updateLeaderboard(update.leaderboard);
+  //updateLeaderboard(update.leaderboard); we got rid of the leaderboard so this is irrelevant
   //console.log(update.others);
   //console.log(`fire?: ${update.me.fire}`);
   // Keep only one game update before the current server time

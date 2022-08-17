@@ -27,7 +27,10 @@ let animationFrameRequestId;
 function render() {
   const { me, others, bullets, capturepoints, healpoints, message } = getCurrentState();
   if (me) {//only does this for the local player, not other clients
-    //console.log(`fire: ${fire}`);
+    //Rendering Order: Background, Map Points, Bullets, Players, UI, 
+    //draw big black square in the abyss
+    context.fillStyle = 'black';
+    context.fillRect(-600, -600, 7600, 7600);
     // Draw background
     renderBackground(me.x, me.y);
 
@@ -53,6 +56,9 @@ function render() {
     // Draw all players
     renderPlayer(me, me);
     others.forEach(renderPlayer.bind(null, me));
+
+
+    //Draw Debug Boxes if editing collision
     if (Constants.COLLISION_EDITOR){
       for (let i = 0; i < getDebugBoxes().length; i++){
         let temp = getDebugBoxes();
@@ -69,11 +75,6 @@ function render() {
         context.restore();
       }
     }
-
-    //mouse position to screen position collider generation
-    // for (let i = 0; i < colliderCount(); i++){
-    //   fillRect(generateColliders(me.x, me.y));
-    // }
   }
 
   // Rerun this render function on the next frame
@@ -162,7 +163,7 @@ function renderPlayer(me, player) {
     //   10 * scale,
     // );
   }
-
+  //hud
   if (me.hp > 0){
     if (me.hp == 3){ image = 'hud3hp.png'};
     if (me.hp == 2){ image = 'hud2hp.png'};
@@ -179,6 +180,10 @@ function renderPlayer(me, player) {
       72 * scale,
     );
   }
+  //gold display
+  context.fillStyle = 'gold';
+  context.font = `${20 * scale}px Comic Sans MS`;
+  context.fillText(me.score, 103 * scale, 63 * scale);
 
 
   //fireCooldown
@@ -240,16 +245,74 @@ function renderCapAndHealPoints(capturepoints, healpoints, me, player){
       context.arc(capturepoints[i].x + (canvas.width / 2) - me.x, capturepoints[i].y + (canvas.height / 2) - me.y, capturepoints[i].radius, 0, 2 * Math.PI);
       context.fill();
       context.stroke();
-      //capture progress bar
-      if (capturepoints[i].active){
-        if (me == capturepoints[i].currentPlayer){
+      //Capture Point Finder Arrow
+      const dx = me.x - capturepoints[i].x;
+      const dy = me.y - capturepoints[i].y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (Math.abs(capturepoints[i].x - me.x) > canvas.width / 2 || Math.abs(capturepoints[i].y - me.y) > canvas.height / 2){
+        let dir = Math.atan2(capturepoints[i].x - me.x, capturepoints[i].y - me.y);
+        dir -= Math.PI/2;
+        let arrowX, arrowY;
+        const dirRatio = (Math.cos(dir) / -Math.sin(dir));
+        const screenRatio = canvas.width / canvas.height;
+        if (Math.abs(Math.cos(dir) * 2) > screenRatio){
+          if (Math.cos(dir) > 0){
+            arrowX = canvas.width - 50; // 100 is radius * 2 rn
+          }else{
+            arrowX = 50;
+          }
+        }else{
+          arrowX = (Math.cos(dir) * (canvas.width / 2)) + (canvas.width / 2) - 50;
+        }
+        if (Math.abs(Math.sin(dir) * 2) > screenRatio){
+          if (-Math.sin(dir) > 0){
+            arrowY = canvas.height - 50;
+          }else{
+            arrowY = 50;
+          }
+        }else{
+          arrowY = (-Math.sin(dir) * (canvas.height / 2)) + (canvas.height / 2) - 50;
+        }
+        //console.log("Direction (degrees), x, y", dir, Math.cos(dir), Math.sin(dir), "\npoint xy", capturepoints[i].x, capturepoints[i].y);
+        //console.log('dir, x, y', dir, arrowX, arrowY, '\ncappoint', capturepoints[i].x, capturepoints[i].y);
+        //console.log('angle ratio', (-Math.sin(dir) * 2), '\nscreen ratio', (canvas.width / canvas.height));
+        context.save();
+        context.translate(arrowX, arrowY);
+        context.rotate(-dir + Math.PI / 4);
+        
+        //console.log('xy cp', capturepoints[i].x, capturepoints[i].y);
+        context.drawImage(
+          getAsset('CPArrow.png'),
+          -50,
+          -50,
+          100,
+          100,
+        );
+        //context.rotate(dir);
+        context.restore();
+      }
 
+      //capture progress bar
+      //console.log(capturepoints[i]);
+      let StringID = me.id;
+      StringID = StringID.slice(0, -3);//this is a filthy solution, absolutely disgusting.. but it works
+      //console.log(StringID);
+      if (capturepoints[i].active){
+        //console.log('point id', healpoints[i].currentPlayer.id);
+        //console.log(me == healpoints[i].currentPlayer);
+        if (StringID == capturepoints[i].currentPlayer.id){
+          context.fillRect(
+            0,
+            82 * scale,
+            231 * scale * (capturepoints[i].timeLeft / Constants.CAPTURE_TIME),
+            30 * scale,
+          );
         }else{
           context.fillRect(
-            canvasX - (Constants.CP_CAPTURE_RADIUS * 1.25) + Constants.CP_CAPTURE_RADIUS * 2.5 * capturepoints[i].timeLeft / Constants.CAPTURE_TIME,
-            canvasY - Constants.CP_CAPTURE_RADIUS - 8,
-            Constants.CP_CAPTURE_RADIUS * 2.5 * (1 - capturepoints[i].timeLeft / Constants.CAPTURE_TIME),
-            6,
+            capturepoints[i].x + (canvas.width / 2) - me.x - Constants.CP_CAPTURE_RADIUS,
+            capturepoints[i].y + (canvas.height / 2) - me.y - Constants.CP_CAPTURE_RADIUS * 1.5,
+            Constants.CP_CAPTURE_RADIUS * 2 * (capturepoints[i].timeLeft / Constants.CAPTURE_TIME),
+            10,
           );
         }
       }
@@ -262,7 +325,7 @@ function renderCapAndHealPoints(capturepoints, healpoints, me, player){
       context.fill();
       context.stroke();
       //capture progress bar
-      console.log(healpoints[i]);
+      //console.log(healpoints[i]);
       let StringID = me.id;
       StringID = StringID.slice(0, -3);//this is a filthy solution, absolutely disgusting.. but it works
       //console.log(StringID);

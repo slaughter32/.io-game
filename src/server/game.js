@@ -33,8 +33,9 @@ class Game{
         this.capturepoints.push(new CapturePoint(Constants.CP_CAPTURE_RADIUS));
       }
       //initialize first capturepoint
-      //this.activeCapturePoints.push(this.capturepoints[0]);
-      this.lastActiveCP = -1;
+      this.activeCapturePoints.push(this.capturepoints[0]);
+      this.lastActiveCP = 0;
+      //this.lastActiveCP = -1;
       //console.log("First Capture Point Location: ", this.capturepoints[0].x, this.capturepoints[0].y);
       //Create Heal Points
       for (let i = 0; i < Constants.HEAL_POINT_QUANTITY; i++){
@@ -46,8 +47,18 @@ class Game{
         this.sockets[socket.id] = socket;
 
         //generate position to start the player at
-        const x = Constants.MAP_SIZE / 2;
-        const y = Constants.MAP_SIZE / 2;
+        //Random within middle 1/4 of map
+        //random coordinate within range of 0-1/2 map size + 1/4 map size that does not collide with any given colliders
+        //ex map size 6400, xy = 0-3200 + 1600 = 1600-4800
+        let foundSpawn = false;
+        let x, y;
+        while (!foundSpawn){//generate a new spawn until it does not collide with any colliders on the map
+          x = Math.random() * (Constants.MAP_SIZE / 2) + (Constants.MAP_SIZE / 4);
+          y = Math.random() * (Constants.MAP_SIZE / 2) + (Constants.MAP_SIZE / 4);
+          if (!collisions.objectBFACollision(x, y, Constants.PLAYER_RADIUS)){
+            foundSpawn = true;
+          }
+        }
         this.players[socket.id] = new Player(socket.id, username, x, y);
     }
 

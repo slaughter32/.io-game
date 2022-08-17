@@ -150,6 +150,7 @@ class Player extends ObjectClass{
             hp: this.hp,
             fire: this.fire,
             dash: this.dashRatio,
+            score: this.score,
         };
     }
 }
