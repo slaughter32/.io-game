@@ -14,7 +14,8 @@ class Player extends ObjectClass{
         this.triedToDash = false;
         this.dashX;
         this.dashY;
-
+        this.animationFrame = 1; //1-8
+        this.animationCooldown = 1 / Constants.ANIMATION_FRAMERATE;
         this.dashCooldown = 0;
         this.dashRatio = this.dashCooldown / Constants.PLAYER_DASH_COOLDOWN;
         this.fire = this.fireCooldown / Constants.PLAYER_FIRE_COOLDOWN;
@@ -27,6 +28,15 @@ class Player extends ObjectClass{
         //console.log(`player coords: ${this.x}, ${this.y}`);
 
         this.score += dt * Constants.SCORE_PER_SECOND;
+        this.animationCooldown -= dt;
+        if (this.animationCooldown <= 0){
+            if (this.animationFrame < 8){
+                this.animationFrame++;
+            }else{
+                this.animationFrame = 1;
+            }
+            this.animationCooldown = 1 / Constants.ANIMATION_FRAMERATE;
+        }
         
         //updates location and makes sure the player is within bounds of the map size
         //Run collision detection to see if the player can move in a given direction
@@ -151,6 +161,7 @@ class Player extends ObjectClass{
             fire: this.fire,
             dash: this.dashRatio,
             score: this.score,
+            frame: this.animationFrame,
         };
     }
 }

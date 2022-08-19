@@ -122,20 +122,48 @@ function renderPlayer(me, player) {
   //later I will need to change which image is being rendered for the player based on:
   //rotation, previous rendition(for walk animations etc so that it cycles)
   context.rotate(0);
-  let widthBuffer = 30;
-  let heightBuffer = 60;
-  let width = 40;
-  let height = 60;
-  context.strokeRect(-10, -10, 20, 20);
+  let widthBuffer = 10;
+  let heightBuffer = 24;
+  let width = 54;//50
+  let height = 72;//66
+  //ANIMATION LOGIC::: 8 frames of each horizontally scrolling
+  //8 columns, 1 for each of the eight directions
+  //1S, 2SE, 3E, 4NE, 5N, 6,NW, 7W, 8SW
+  let animState;//for columns
+  if (player.direction == 0){
+    animState = 5;//idle is the same as north rn....
+  }
+  if (player.direction > 0){
+    if (player.direction < 1.5){
+      animState = 4;
+    }else if (player.direction < 2){
+      animState = 3;
+    }else if (player.direction < 3){
+      animState = 2;
+    }else{
+      animState = 1;
+    }
+  }else if(player.direction < 0){
+    if (player.direction < -2){
+      animState = 8;
+    }else if(player.direction < -1.5){
+      animState = 7;
+    }else{
+      animState = 6;
+    }
+  }
+  //console.log('frame: ', player.frame);
+  let frame = Math.round(player.frame);//for rows... Should increase for animating... Not sure how to do this just yet
+  //context.strokeRect(-30, -30, 60, 60);
   context.drawImage(
     //instead of drawing one image, I will need to draw an image based on both the previous image as well as the direction the player is moving...
     getAsset('magespritesheetfinal.png'),
-    widthBuffer,
-    heightBuffer,
+    8 + (widthBuffer * (frame - 1)) + (width * (frame - 1)),
+    (heightBuffer * animState) + (height * (animState - 1)),
     width,
     height,
-    -widthBuffer,
-    -heightBuffer,
+    -(width / 2),
+    -(height / 2),
     width,
     height,
   );

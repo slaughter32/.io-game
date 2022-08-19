@@ -31,6 +31,7 @@ function applyCollisions(players, bullets){
             }
         }
         //check for collisions with colliders in the map
+        //perhaps a better way would be to do a line collision for this then let the bullet go until those coordinates unless it hits a player... More expensive calculation that only needs to be run once.
         for (let c = 0; c < BFA.length; c++){
             let centX = (BFA[c][0] + BFA[c][2]) / 2;
             let centY = (BFA[c][1] + BFA[c][3]) / 2;
@@ -62,17 +63,13 @@ function checkPlayerCollisions(player){
         //console.log('thing happen');
         let centX = (BFA[i][0] + BFA[i][2]) / 2;
         let centY = (BFA[i][1] + BFA[i][3]) / 2;
-        //if (Math.hypot(centX - player.x, centY - player.y) > Constants.PLAYER_RADIUS * 20){continue};
-        if (Math.hypot(centX - player.x, centY - player.y) > Constants.COLLISION_DIST){continue};
+        if (Math.hypot(centX - player.x, centY - player.y) > Constants.COLLISION_DIST){continue};//only check nearby colliders
         //X
         if (Math.abs(player.x - BFA[i][2]) < Constants.PLAYER_RADIUS && player.y < BFA[i][3] + Constants.PLAYER_RADIUS && player.y > BFA[i][1] - Constants.PLAYER_RADIUS) {colls[1] = BFA[i][2] + Constants.PLAYER_RADIUS};
         if (Math.abs(player.x - BFA[i][0]) < Constants.PLAYER_RADIUS && player.y < BFA[i][3] + Constants.PLAYER_RADIUS && player.y > BFA[i][1] - Constants.PLAYER_RADIUS) {colls[0] = BFA[i][0] - Constants.PLAYER_RADIUS};
         //Y
         if (Math.abs(player.y - BFA[i][3]) < Constants.PLAYER_RADIUS && player.x < BFA[i][2] + Constants.PLAYER_RADIUS && player.x > BFA[i][0] - Constants.PLAYER_RADIUS) {colls[2] = BFA[i][3] + Constants.PLAYER_RADIUS};
         if (Math.abs(player.y - BFA[i][1]) < Constants.PLAYER_RADIUS && player.x < BFA[i][2] + Constants.PLAYER_RADIUS && player.x > BFA[i][0] - Constants.PLAYER_RADIUS) {colls[3] = BFA[i][1] - Constants.PLAYER_RADIUS; break};
-
-        //what if instead I checked for a broad collision, then locked the players movement in said direction
-        //until there was no longer a collision
     }
     return colls;
 }
