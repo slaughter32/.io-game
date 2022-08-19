@@ -122,9 +122,9 @@ function renderPlayer(me, player) {
   //later I will need to change which image is being rendered for the player based on:
   //rotation, previous rendition(for walk animations etc so that it cycles)
   context.rotate(0);
-  let widthBuffer = 10;
+  let widthBuffer = 8;
   let heightBuffer = 24;
-  let width = 54;//50
+  let width = 56;//50
   let height = 72;//66
   //ANIMATION LOGIC::: 8 frames of each horizontally scrolling
   //8 columns, 1 for each of the eight directions
@@ -153,7 +153,13 @@ function renderPlayer(me, player) {
     }
   }
   //console.log('frame: ', player.frame);
-  let frame = Math.round(player.frame);//for rows... Should increase for animating... Not sure how to do this just yet
+  let frame;
+  if (!player.idle){
+    frame = Math.round(player.frame);//for rows... 
+  }else{//idle
+    frame = 1;
+    animState = 1;
+  }
   //context.strokeRect(-30, -30, 60, 60);
   context.drawImage(
     //instead of drawing one image, I will need to draw an image based on both the previous image as well as the direction the player is moving...

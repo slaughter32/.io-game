@@ -16,6 +16,7 @@ class Player extends ObjectClass{
         this.dashY;
         this.animationFrame = 1; //1-8
         this.animationCooldown = 1 / Constants.ANIMATION_FRAMERATE;
+        this.idle = false;
         this.dashCooldown = 0;
         this.dashRatio = this.dashCooldown / Constants.PLAYER_DASH_COOLDOWN;
         this.fire = this.fireCooldown / Constants.PLAYER_FIRE_COOLDOWN;
@@ -36,6 +37,11 @@ class Player extends ObjectClass{
                 this.animationFrame = 1;
             }
             this.animationCooldown = 1 / Constants.ANIMATION_FRAMERATE;
+        }
+        if (this.speed == 0){
+            this.idle = true;
+        }else{
+            this.idle = false;
         }
         
         //updates location and makes sure the player is within bounds of the map size
@@ -162,6 +168,7 @@ class Player extends ObjectClass{
             dash: this.dashRatio,
             score: this.score,
             frame: this.animationFrame,
+            idle: this.idle,
         };
     }
 }
