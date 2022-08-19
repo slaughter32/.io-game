@@ -6,11 +6,11 @@ module.exports = Object.freeze({
 
     COLLISION_DIST: 300,
     //Player
-    PLAYER_RADIUS: 20,
+    PLAYER_RADIUS: 32,//32
     PLAYER_MAX_HP: 3,
-    PLAYER_SPEED: 400,
+    PLAYER_SPEED: 325,
     PLAYER_FIRE_COOLDOWN: 1,//4 second cooldown between fireballs unless you hit a player in which you can instantly shoot again
-    
+    ANIMATION_FRAMERATE: 8,//16fps
 
     //Dashing
     PLAYER_DASH_COOLDOWN: 4,
