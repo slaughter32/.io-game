@@ -122,13 +122,22 @@ function renderPlayer(me, player) {
   //later I will need to change which image is being rendered for the player based on:
   //rotation, previous rendition(for walk animations etc so that it cycles)
   context.rotate(0);
+  let widthBuffer = 30;
+  let heightBuffer = 60;
+  let width = 40;
+  let height = 60;
+  context.strokeRect(-10, -10, 20, 20);
   context.drawImage(
     //instead of drawing one image, I will need to draw an image based on both the previous image as well as the direction the player is moving...
-    getAsset('magechar.png'),
-    -PLAYER_RADIUS,
-    -PLAYER_RADIUS,
-    PLAYER_RADIUS * 2,
-    PLAYER_RADIUS * 2,
+    getAsset('magespritesheetfinal.png'),
+    widthBuffer,
+    heightBuffer,
+    width,
+    height,
+    -widthBuffer,
+    -heightBuffer,
+    width,
+    height,
   );
   context.restore();
 
