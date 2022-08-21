@@ -58,6 +58,8 @@ module.exports = Object.freeze({
         INPUT: 'input',
         SHOOT: 'shoot',
         DASH: 'dash',
+        RECALL: 'recall',
+        RECALLED: 'recalled',//occurs on successful recall
         GAME_OVER: 'dead',
     },
 });

@@ -2,6 +2,7 @@
 import { updateDirection } from "./networking";
 import { tryShoot } from "./networking";
 import { tryDash } from "./networking";
+import { recall } from './networking';
 const Constants = require('../shared/constants');
 //mouse for direction the player is looking/aiming
 //wasd for movement
@@ -33,10 +34,15 @@ function mouseDirection(event){
   mouseDir = Math.atan2(event.clientX - window.innerWidth / 2, window.innerHeight / 2 - event.clientY);
 }
 function Dash(event){
-  if (event.keyCode == 32){
+  if (event.keyCode == 32){//32 = SPACE
     tryDash(mouseDir);
     //dash in the direction of the mouse?
     //teleport player forward and start a dash cooldown which is removed on fireball hit or 4 seconds.
+  }
+}
+function attemptRecall(event){
+  if (event.key == 'b'){//66 = B
+    recall();
   }
 }
 
@@ -125,6 +131,7 @@ export function startCapturingInput(){
     window.addEventListener('keyup', onKeyUp);
     window.addEventListener('click', onMouseClick);
     window.addEventListener('keypress', Dash);
+    window.addEventListener('keydown', attemptRecall);
     //window.addEventListener('keydown', onKeyInput);
 }
 export function stopCapturingInput(){
@@ -133,6 +140,7 @@ export function stopCapturingInput(){
     window.removeEventListener('keyup', onKeyUp);
     window.removeEventListener('click', onMouseClick);
     window.removeEventListener('keypress', Dash);
+    window.removeEventListener('keydown', attemptRecall);
     //window.removeEventListener('keydown', onKeyInput);
 }
 export function start(){//just so that I can prevent the player from having false input at the start

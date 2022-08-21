@@ -39,6 +39,7 @@ io.on('connection', socket => {
   socket.on(Constants.MSG_TYPES.INPUT, handleInput);
   socket.on(Constants.MSG_TYPES.SHOOT, shoot);
   socket.on(Constants.MSG_TYPES.DASH, dash);
+  socket.on(Constants.MSG_TYPES.RECALL, recall);
   socket.on('disconnect', onDisconnect);
 });
 
@@ -58,6 +59,9 @@ function shoot(mouseDir){
 }
 function dash(mouseDir){
   game.dash(this, mouseDir);
+}
+function recall(){
+  game.recall(this);
 }
 
 function onDisconnect() {

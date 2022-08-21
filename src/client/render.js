@@ -160,6 +160,9 @@ function renderPlayer(me, player) {
     frame = 1;
     animState = 1;
   }
+
+  //Player Animations differ from running when: player is recalling, player died
+
   //context.strokeRect(-30, -30, 60, 60);
   context.drawImage(
     //instead of drawing one image, I will need to draw an image based on both the previous image as well as the direction the player is moving...

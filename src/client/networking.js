@@ -21,7 +21,7 @@ export const connect = onGameOver => (
     // Register callbacks
     socket.on(Constants.MSG_TYPES.GAME_UPDATE, processGameUpdate);
     socket.on(Constants.MSG_TYPES.GAME_OVER, onGameOver);
-    socket.on()
+    socket.on(Constants.MSG_TYPES.RECALLED, onGameOver);
     socket.on('disconnect', () => {
       console.log('Disconnected from server.');
       document.getElementById('disconnect-modal').classList.remove('hidden');
@@ -45,4 +45,7 @@ export const tryShoot = throttle(20, (mouseDir) => {
 });
 export const tryDash = throttle(20, (mouseDir) => {
   socket.emit(Constants.MSG_TYPES.DASH, mouseDir);
+})
+export const recall = throttle(20, () => {
+  socket.emit(Constants.MSG_TYPES.RECALL);
 })

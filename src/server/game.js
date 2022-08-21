@@ -15,6 +15,7 @@ class Game{
         this.healpoints = [];
         this.activeCapturePoints = [];
         this.activeHealPoints = [];
+        this.top10 = [];
         this.serverProfitSinceCap = 0;
         this.timeSinceLastCap = 0;
         this.lastActiveCP = 0;
@@ -63,7 +64,7 @@ class Game{
     }
 
     removePlayer(socket){
-        delete this.sockets[socket.id];
+        delete this.sockets[socket.id];//perhaps dont do this and dont create a new one for them when they click start since they already have one
         delete this.players[socket.id];
     }
 
@@ -80,6 +81,12 @@ class Game{
     dash(socket, mouseDir){
       if (this.players[socket.id]){
         this.players[socket.id].dash(mouseDir, collisions.checkDashCollisions(this.players[socket.id], mouseDir));
+      }
+    }
+    recall(socket){
+      if (this.players[socket.id]){
+        //lock player movement, lock player shooting, start 6 second timer... player can still die during this time
+        this.players[socket.id].startRecallTimer();
       }
     }
     handleSpeed(socket, speed){
@@ -208,6 +215,12 @@ class Game{
           const player = this.players[playerID];
           if (player.hp <= 0) {
             socket.emit(Constants.MSG_TYPES.GAME_OVER);
+            this.tryTop10(player);
+            this.removePlayer(socket);
+          }
+          if (player.recallTimer <= 0){
+            socket.emit(Constants.MSG_TYPES.RECALLED);
+            this.tryTop10(player);
             this.removePlayer(socket);
           }
         });
@@ -229,7 +242,23 @@ class Game{
           this.shouldSendUpdate = true;
         }
       }
-    
+      tryTop10(player){
+        let username = player.username
+        if (username = ''){
+          username = 'anonymous'
+        }
+        if (this.top10.length < 10){
+          this.top10.push([username, player.score]);
+        }else{
+          for (let i = 0; i < this.top10.length; i++){
+            if (player.score > this.top10[i][1]){
+              this.top10.pop(this.top10[i]);
+              this.top10.push([username, player.score]);
+            }
+          }
+        }
+        console.log(this.top10);
+      }
       getLeaderboard() {
         return Object.values(this.players)
           .sort((p1, p2) => p2.score - p1.score)

@@ -17,6 +17,8 @@ class Player extends ObjectClass{
         this.animationFrame = 1; //1-8
         this.animationCooldown = 1 / Constants.ANIMATION_FRAMERATE;
         this.idle = false;
+        this.recalling = false;
+        this.recallTimer = Constants.RECALL_TIME;
         this.dashCooldown = 0;
         this.dashRatio = this.dashCooldown / Constants.PLAYER_DASH_COOLDOWN;
         this.fire = this.fireCooldown / Constants.PLAYER_FIRE_COOLDOWN;
@@ -52,38 +54,43 @@ class Player extends ObjectClass{
         //this.y -= dt * this.speed * Math.cos(this.direction); // > 0 or < 0
         //ideally the player should only try to move in a given direction if it can
         //this.canMove = collisions.checkPlayerCollisions(this);
-        if (this.canMove[0] != 0 || this.canMove[1] != 0){
-            if (this.canMove[0] != 0){//restrict right
-                if (Math.sin(this.direction) < 0){
-                    this.x += dt * this.speed * Math.sin(this.direction);
+        if (!this.recalling) {//dont allow the player to move if the player is recalling
+            if (this.canMove[0] != 0 || this.canMove[1] != 0){
+                if (this.canMove[0] != 0){//restrict right
+                    if (Math.sin(this.direction) < 0){
+                        this.x += dt * this.speed * Math.sin(this.direction);
+                    }
+                }else{//restrict left
+                    if (Math.sin(this.direction) > 0){
+                        this.x += dt * this.speed * Math.sin(this.direction);
+                    }
                 }
-            }else{//restrict left
-                if (Math.sin(this.direction) > 0){
-                    this.x += dt * this.speed * Math.sin(this.direction);
-                }
+            }else{
+                this.x += dt * this.speed * Math.sin(this.direction);
             }
-        }else{
-            this.x += dt * this.speed * Math.sin(this.direction);
-        }
-        if (this.canMove[2] != 0 || this.canMove[3] != 0){
-            if (this.canMove[2] != 0){//restrict up
-                if (Math.cos(this.direction) < 0){
-                    this.y -= dt * this.speed * Math.cos(this.direction);
+            if (this.canMove[2] != 0 || this.canMove[3] != 0){
+                if (this.canMove[2] != 0){//restrict up
+                    if (Math.cos(this.direction) < 0){
+                        this.y -= dt * this.speed * Math.cos(this.direction);
+                    }
+                }else{//restrict down
+                    if (Math.cos(this.direction) > 0){
+                        this.y -= dt * this.speed * Math.cos(this.direction);
+                    }
                 }
-            }else{//restrict down
-                if (Math.cos(this.direction) > 0){
-                    this.y -= dt * this.speed * Math.cos(this.direction);
-                }
+            }else{
+                this.y -= dt * this.speed * Math.cos(this.direction);
             }
-        }else{
-            this.y -= dt * this.speed * Math.cos(this.direction);
+            
+            //prevents player from moving below 0 or beyond MAP_SIZE
+            this.x = Math.max(0, Math.min(Constants.MAP_SIZE, this.x));
+            this.y = Math.max(0, Math.min(Constants.MAP_SIZE, this.y));
+        }; 
+
+        
+        if (this.recalling){
+            this.recallTimer -= dt;
         }
-        
-        //prevents player from moving below 0 or beyond MAP_SIZE
-        this.x = Math.max(0, Math.min(Constants.MAP_SIZE, this.x));
-        this.y = Math.max(0, Math.min(Constants.MAP_SIZE, this.y));
-        
-        //need to send this.fireCooldown / Constants.PLAYER_FIRE_COOLDOWN to the client
 
         this.fireCooldown -= dt;
         //I need to half the current dash cooldown if a player hits another with a fireball
@@ -117,6 +124,7 @@ class Player extends ObjectClass{
         }
         this.triedToDash = false;
         this.triedToShoot = false;
+        
         return null;
     }
     takeBulletDamage(){
@@ -124,15 +132,19 @@ class Player extends ObjectClass{
     }
     shoot(mouseDir){
         //console.log('player-shoot');
-        this.mDir = mouseDir;
-        this.triedToShoot = true;
+        if (!this.recalling){//no shoot if recalling
+            this.mDir = mouseDir;
+            this.triedToShoot = true;
+        }
     }
     dash(mouseDir, coord){
         //console.log("In player", coord[0], coord[1]);
-        this.mDir = mouseDir;
-        this.dashX = coord[0];//x
-        this.dashY = coord[1];//y
-        this.triedToDash = true;
+        if (!this.recalling){//no dash if recalling
+            this.mDir = mouseDir;
+            this.dashX = coord[0];//x
+            this.dashY = coord[1];//y
+            this.triedToDash = true;
+        }
     }
     halfDashCooldown(){
         this.dashCooldown = this.dashCooldown / 2;
@@ -158,6 +170,9 @@ class Player extends ObjectClass{
             this.score = insurance;
         }
     }
+    startRecallTimer(){
+        this.recalling = true;
+    }
     serializeForUpdate(){
         //console.log(this.id, this.direction, this.hp, this.fire);
         return{
@@ -169,6 +184,7 @@ class Player extends ObjectClass{
             score: this.score,
             frame: this.animationFrame,
             idle: this.idle,
+            recalling: this.recalling,
         };
     }
 }
