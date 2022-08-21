@@ -19,6 +19,8 @@ class Player extends ObjectClass{
         this.idle = false;
         this.recalling = false;
         this.recallTimer = Constants.RECALL_TIME;
+        this.framesDone = 0;//because pain
+        this.loopUp = true;
         this.dashCooldown = 0;
         this.dashRatio = this.dashCooldown / Constants.PLAYER_DASH_COOLDOWN;
         this.fire = this.fireCooldown / Constants.PLAYER_FIRE_COOLDOWN;
@@ -32,19 +34,53 @@ class Player extends ObjectClass{
 
         this.score += dt * Constants.SCORE_PER_SECOND;
         this.animationCooldown -= dt;
-        if (this.animationCooldown <= 0){
-            if (this.animationFrame < 8){
-                this.animationFrame++;
-            }else{
-                this.animationFrame = 1;
+        if (!this.recalling){
+            if (this.animationCooldown <= 0){
+                if (this.animationFrame < 8){
+                    this.animationFrame++;
+                }else{
+                    this.animationFrame = 1;
+                }
+                this.animationCooldown = 1 / Constants.ANIMATION_FRAMERATE;
             }
-            this.animationCooldown = 1 / Constants.ANIMATION_FRAMERATE;
+            if (this.speed == 0){
+                this.idle = true;
+            }else{
+                this.idle = false;
+            }
         }
-        if (this.speed == 0){
-            this.idle = true;
-        }else{
+        if (this.recalling){
             this.idle = false;
+            const totalRecallFrames = Constants.ANIMATION_FRAMERATE * Constants.RECALL_TIME;
+            const loopFrames = totalRecallFrames - 19;
+            let framesLeft = totalRecallFrames - this.framesDone;
+            //loop frames 6-10
+            if (this.animationCooldown <= 0){
+                if (this.animationFrame < 19){
+                    if (framesLeft > 17){
+                        if (this.animationFrame < 10 && this.loopUp){
+                            this.animationFrame++;
+                        }else{
+                            this.loopUp = false;
+                            if (this.animationFrame > 6){
+                                this.animationFrame--;
+                            }else{
+                                this.loopUp = true;
+                                this.animationFrame++;
+                            }
+                            
+                        }
+                    }else{
+                        this.animationFrame++;
+                    }
+                }else{
+                    this.animationFrame = 20;
+                }
+                this.animationCooldown = 1 / Constants.ANIMATION_FRAMERATE;
+                this.framesDone++;
+            }
         }
+
         
         //updates location and makes sure the player is within bounds of the map size
         //Run collision detection to see if the player can move in a given direction
@@ -172,6 +208,8 @@ class Player extends ObjectClass{
     }
     startRecallTimer(){
         this.recalling = true;
+        this.animationFrame = 1;
+        this.animationCooldown = 1 / Constants.ANIMATION_FRAMERATE;
     }
     serializeForUpdate(){
         //console.log(this.id, this.direction, this.hp, this.fire);

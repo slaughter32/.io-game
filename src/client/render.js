@@ -126,6 +126,7 @@ function renderPlayer(me, player) {
   let heightBuffer = 24;
   let width = 56;//50
   let height = 72;//66
+  let image = 'magespritesheetfinal.png';
   //ANIMATION LOGIC::: 8 frames of each horizontally scrolling
   //8 columns, 1 for each of the eight directions
   //1S, 2SE, 3E, 4NE, 5N, 6,NW, 7W, 8SW
@@ -160,19 +161,32 @@ function renderPlayer(me, player) {
     frame = 1;
     animState = 1;
   }
-
+  let dumbSpriteSheet = 4;
+  let yBias = 0;//x and y bias affect where the player is centered on the canvas when drawn
+  let xBias = 0;
   //Player Animations differ from running when: player is recalling, player died
-
+  if (player.recalling == 1){//player is recalling
+    //recall stuff: player head starts 56 pixels from the top, 0px from the left
+    //width of 78
+    //height of 142
+    image = 'WizardExtract.png';
+    width = 78;
+    height = 142;
+    widthBuffer = 0;
+    heightBuffer = 0;
+    animState = 1;
+    dumbSpriteSheet = 0;
+  }
   //context.strokeRect(-30, -30, 60, 60);
   context.drawImage(
     //instead of drawing one image, I will need to draw an image based on both the previous image as well as the direction the player is moving...
-    getAsset('magespritesheetfinal.png'),
-    8 + (widthBuffer * (frame - 1)) + (width * (frame - 1)),
+    getAsset(image),
+    dumbSpriteSheet + (widthBuffer * (frame - 1)) + (width * (frame - 1)),
     (heightBuffer * animState) + (height * (animState - 1)),
     width,
     height,
-    -(width / 2),
-    -(height / 2),
+    -(width / 2) + xBias,
+    -(height / 2) + yBias,
     width,
     height,
   );
