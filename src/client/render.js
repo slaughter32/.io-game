@@ -154,13 +154,6 @@ function renderPlayer(me, player) {
     }
   }
   //console.log('frame: ', player.frame);
-  let frame;
-  if (!player.idle){
-    frame = Math.round(player.frame);//for rows... 
-  }else{//idle
-    frame = 1;
-    animState = 1;
-  }
   let dumbSpriteSheet = 4;
   let yBias = 0;//x and y bias affect where the player is centered on the canvas when drawn
   let xBias = 0;
@@ -176,6 +169,25 @@ function renderPlayer(me, player) {
     heightBuffer = 0;
     animState = 1;
     dumbSpriteSheet = 0;
+  }
+  //death after recall because death should overrite recall too
+  if (player.dying == 1){
+    image = 'WizardDeath.png';
+    //height of 96
+    //width of 64
+    height = 96;
+    width = 64;
+    widthBuffer = 0;
+    heightBuffer = 0;
+    animState = 1;
+    dumbSpriteSheet = 0;
+  }
+  let frame;
+  if (!player.idle){
+    frame = Math.round(player.frame);//for rows... 
+  }else{//idle
+    frame = 1;
+    animState = 1;
   }
   //context.strokeRect(-30, -30, 60, 60);
   context.drawImage(

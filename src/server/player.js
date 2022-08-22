@@ -20,7 +20,8 @@ class Player extends ObjectClass{
         this.recalling = false;
         this.recallTimer = Constants.RECALL_TIME;
         this.framesDone = 0;//because pain
-        this.loopUp = true;
+        this.loopUp = true;//also pain
+        this.playingDeathAnimation = false;
         this.dashCooldown = 0;
         this.dashRatio = this.dashCooldown / Constants.PLAYER_DASH_COOLDOWN;
         this.fire = this.fireCooldown / Constants.PLAYER_FIRE_COOLDOWN;
@@ -29,12 +30,13 @@ class Player extends ObjectClass{
 
     update(dt){
         super.update(dt);
-
+        //console.log(this.playingDeathAnimation, this.hp, this.animationCooldown);
         //console.log(`player coords: ${this.x}, ${this.y}`);
 
         this.score += dt * Constants.SCORE_PER_SECOND;
         this.animationCooldown -= dt;
-        if (!this.recalling){
+
+        if (!this.recalling && this.hp > 0){
             if (this.animationCooldown <= 0){
                 if (this.animationFrame < 8){
                     this.animationFrame++;
@@ -49,7 +51,7 @@ class Player extends ObjectClass{
                 this.idle = false;
             }
         }
-        if (this.recalling){
+        if (this.recalling && this.hp > 0){
             this.idle = false;
             const totalRecallFrames = Constants.ANIMATION_FRAMERATE * Constants.RECALL_TIME;
             const loopFrames = totalRecallFrames - 19;
@@ -80,6 +82,18 @@ class Player extends ObjectClass{
                 this.framesDone++;
             }
         }
+        if (this.hp <= 0 && this.playingDeathAnimation){
+            //player death is 41 frames...
+            this.idle = false;
+            if (this.animationCooldown <= 0){
+                if (this.animationFrame < 41){
+                    this.animationFrame++;
+                }else{
+                    this.playingDeathAnimation = false;
+                }
+                this.animationCooldown = 1 / Constants.ANIMATION_FRAMERATE;
+            }
+        }
 
         
         //updates location and makes sure the player is within bounds of the map size
@@ -90,7 +104,7 @@ class Player extends ObjectClass{
         //this.y -= dt * this.speed * Math.cos(this.direction); // > 0 or < 0
         //ideally the player should only try to move in a given direction if it can
         //this.canMove = collisions.checkPlayerCollisions(this);
-        if (!this.recalling) {//dont allow the player to move if the player is recalling
+        if (!this.recalling && !this.playingDeathAnimation) {//dont allow the player to move if the player is recalling
             if (this.canMove[0] != 0 || this.canMove[1] != 0){
                 if (this.canMove[0] != 0){//restrict right
                     if (Math.sin(this.direction) < 0){
@@ -168,14 +182,14 @@ class Player extends ObjectClass{
     }
     shoot(mouseDir){
         //console.log('player-shoot');
-        if (!this.recalling){//no shoot if recalling
+        if (!this.recalling && !this.playingDeathAnimation){//no shoot if recalling
             this.mDir = mouseDir;
             this.triedToShoot = true;
         }
     }
     dash(mouseDir, coord){
         //console.log("In player", coord[0], coord[1]);
-        if (!this.recalling){//no dash if recalling
+        if (!this.recalling && !this.playingDeathAnimation){//no dash if recalling
             this.mDir = mouseDir;
             this.dashX = coord[0];//x
             this.dashY = coord[1];//y
@@ -201,9 +215,14 @@ class Player extends ObjectClass{
         return this.score;
     }
     onDeath(){
+        this.animationFrame = 1;
+        this.animationCooldown = 1 / Constants.ANIMATION_FRAMERATE;
+        this.playingDeathAnimation = true;
         let insurance = (this.score - Constants.INSURANCE_THRESHHOLD) * Constants.INSURANCE_PERCENT;
         if (insurance > 0){
             this.score = insurance;
+        }else{
+            this.score = 0;
         }
     }
     startRecallTimer(){
@@ -223,6 +242,7 @@ class Player extends ObjectClass{
             frame: this.animationFrame,
             idle: this.idle,
             recalling: this.recalling,
+            dying: this.playingDeathAnimation,
         };
     }
 }

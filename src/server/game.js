@@ -175,7 +175,9 @@ class Game{
         //update each player
         Object.keys(this.sockets).forEach(playerID => {
             const player = this.players[playerID];
-            player.checkCollisions(collisions.checkPlayerCollisions(player));
+            if (player.hp > 0){
+              player.checkCollisions(collisions.checkPlayerCollisions(player));
+            }
             const newBullet = player.update(dt);
             if (newBullet){
                 this.bullets.push(newBullet);
@@ -213,7 +215,8 @@ class Game{
         Object.keys(this.sockets).forEach(playerID => {
           const socket = this.sockets[playerID];
           const player = this.players[playerID];
-          if (player.hp <= 0) {
+          if (player.hp <= 0 && !player.playingDeathAnimation) {
+            console.log('killed player');
             socket.emit(Constants.MSG_TYPES.GAME_OVER);
             this.tryTop10(player);
             this.removePlayer(socket);
@@ -268,10 +271,10 @@ class Game{
     
       createUpdate(player, leaderboard) {
         const nearbyPlayers = Object.values(this.players).filter(
-          p => p !== player && p.distanceTo(player) <= Constants.MAP_SIZE / 2,
+          p => p !== player && p.distanceTo(player) <= Constants.MAP_SIZE / 4,
         );
         const nearbyBullets = this.bullets.filter(
-          b => b.distanceTo(player) <= Constants.MAP_SIZE / 2,
+          b => b.distanceTo(player) <= Constants.MAP_SIZE / 4,
         );
         //console.log(nearbyPlayers.map(p => p.serializeForUpdate()));
         return {

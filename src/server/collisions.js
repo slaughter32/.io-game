@@ -20,7 +20,7 @@ function applyCollisions(players, bullets){
         const bullet = bullets[i];
         for (let j = 0; j < players.length; j++){
             const player = players[j];
-            if (bullet.parentID !== player.id && player.distanceTo(bullet) <= Constants.PLAYER_RADIUS + Constants.BULLET_RADIUS){
+            if (bullet.parentID !== player.id && player.distanceTo(bullet) <= Constants.PLAYER_RADIUS + Constants.BULLET_RADIUS && player.hp > 0){
 
                 //needs to pass a seperate value to show that the bullet collided with a player
                 bullet.playerCollision = true;
