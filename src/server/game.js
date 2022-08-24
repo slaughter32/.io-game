@@ -21,6 +21,8 @@ class Game{
         this.lastActiveCP = 0;
         this.timeTillHP = 0;
         this.globalServerMessage = '';
+        this.fiveminmessage = true;
+        this.oneminmessage = true;
         this.messageTime = Constants.GLOBAL_MESSAGE_LENGTH;
         this.lastUpdateTime = Date.now();
         this.shouldSendUpdate = false;
@@ -101,12 +103,12 @@ class Game{
         const dt = (now - this.lastUpdateTime) / 1000;
         this.lastUpdateTime = now;
 
-        if (this.serverProfitSinceCap >= Constants.CAPTURE_POINT_REQUIRED_GOLD){
+        if (this.serverProfitSinceCap >= Constants.CAPTURE_POINT_REQUIRED_GOLD && this.fiveminmessage){
           this.timeSinceLastCap += dt;//countdown starts
           this.globalServerMessage = "Capture Point Spawning in 5 Minutes";
         }
         this.timeTillHP -= dt;
-        if (Constants.CAPTURE_POINT_REQUIRED_TIME - this.timeSinceLastCap <= 60 && this.messageTime == Constants.GLOBAL_MESSAGE_LENGTH){
+        if (Constants.CAPTURE_POINT_REQUIRED_TIME - this.timeSinceLastCap <= 60 && this.messageTime == Constants.GLOBAL_MESSAGE_LENGTH && this.oneminmessage){
           this.globalServerMessage = "Capture Point Spawning in 1 Minute";
         }
         //set active capture and heal points
@@ -134,12 +136,14 @@ class Game{
           activePoint.update(dt);
           //console.log(activePoint);
           if (activePoint.timeLeft <= 0){
+            this.fiveminmessage = true;
+            this.oneminmessage = true;
             activePoint.currentPlayer.score += Constants.CAPTURE_POINT_BONUS_GOLD;
             this.globalServerMessage = "Objective Has Been Taken";
             this.activeCapturePoints.pop();
             this.serverProfitSinceCap = 0;
+            this.timeSinceLastCap = 0;
           }
-          
         }
         for (let i = 0; i < this.activeHealPoints.length; i++){
           const activePoint = this.activeHealPoints[i];
@@ -157,6 +161,11 @@ class Game{
         if (this.globalServerMessage != ''){
           this.messageTime -= dt;
           if (this.messageTime <= 0){
+            if (this.globalServerMessage = 'Capture Point Spawning in 5 Minutes'){
+              this.fiveminmessage = false;
+            }else if (this.globalServerMessage = 'Capture Point Spawning in 1 Minute'){
+              this.oneminmessage = false;
+            }
             this.globalServerMessage = '';
             this.messageTime = Constants.GLOBAL_MESSAGE_LENGTH;
           }

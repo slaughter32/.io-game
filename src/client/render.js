@@ -5,6 +5,7 @@ import { debounce } from 'throttle-debounce';
 import { getAsset } from './assets';
 import { getCurrentState } from './state';
 import { getDebugBoxes } from './colliderGenerator';
+import { getDir } from './input';
 
 const Constants = require('../shared/constants');
 
@@ -112,7 +113,7 @@ function renderBackground(x, y) {
 
 // Renders a player at the given coordinates
 function renderPlayer(me, player) {
-  const { x, y, direction, fire, dash } = player;
+  const { x, y, direction, fire, dash, fireState } = player;
   const canvasX = canvas.width / 2 + x - me.x;
   const canvasY = canvas.height / 2 + y - me.y;
 
@@ -127,6 +128,7 @@ function renderPlayer(me, player) {
   let width = 56;//50
   let height = 72;//66
   let image = 'magespritesheetfinal.png';
+  //console.log(getDir());
   //ANIMATION LOGIC::: 8 frames of each horizontally scrolling
   //8 columns, 1 for each of the eight directions
   //1S, 2SE, 3E, 4NE, 5N, 6,NW, 7W, 8SW
@@ -206,7 +208,6 @@ function renderPlayer(me, player) {
 
 
 
-
  //draws players local healthbar in the top left and draws other players health bars underneath them
  if (me == player){
   let image = '';
@@ -228,12 +229,6 @@ function renderPlayer(me, player) {
       185 * (1 - dash),
       10 * scale,
     );
-    // context.fillRect(
-    //   offset + 80 * scale,
-    //   offset + 23 * scale,
-    //   90 * 2 * dash,
-    //   10 * scale,
-    // );
   }
   //hud
   if (me.hp > 0){
@@ -258,18 +253,28 @@ function renderPlayer(me, player) {
   context.fillText(me.score, 103 * scale, 63 * scale);
 
 
-  //fireCooldown
-  if (fire > 0){
-    //console.log(`fire cooldown: ${fireCooldown}`);
-    context.fillStyle = 'white';
-    context.fillRect(
-      canvasX - PLAYER_RADIUS,
-      canvasY + PLAYER_RADIUS + 8,
-      PLAYER_RADIUS * 2 * fire,
-      2,
-    );
+  //fireball
+  context.save();
+  let fireImage = 'OrbSpawn.png';
+  const dir = getDir();
+  context.translate(Math.cos(dir - Math.PI /2) * Constants.IDLE_DIST_FROM_PLAYER + canvas.width / 2, Math.sin(dir - Math.PI/2) * Constants.IDLE_DIST_FROM_PLAYER + canvas.height / 2);
+  //firefinder
+  //add a 'state' variable: 0=recharging, 1=charged/idle
+  if (fireState == 1){
+    fireImage = 'OrbFire.png';
   }
-
+  context.drawImage(
+    getAsset(fireImage),
+    30 * (Math.round(fire) - 1),
+    0,
+    30,
+    30,
+    -15,
+    -15,
+    30,
+    30,
+   );
+    //context.rotate(dir);
   context.restore();
 
   //locally we want a cooldown to display for firing, for now that will go in the place of the healthbar for other ships

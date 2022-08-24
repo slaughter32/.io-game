@@ -146,3 +146,6 @@ export function stopCapturingInput(){
 export function start(){//just so that I can prevent the player from having false input at the start
   gotInput();
 }
+export function getDir(){
+  return mouseDir;
+}

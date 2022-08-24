@@ -19,6 +19,7 @@ module.exports = Object.freeze({
     BULLET_RADIUS: 10,
     BULLET_SPEED: 800, //must be different than player speed, even if just by 1... if this becomes a problem for some reason it can be solved but it makes 0 sense to have bullets travel the same speed as the player
     BULLET_DAMAGE: 1,
+    IDLE_DIST_FROM_PLAYER: 48,
     //capture point
     CAPTURE_TIME: 10,//in seconds
     MAX_ACTIVE: 1,

@@ -8,7 +8,7 @@ class Player extends ObjectClass{
         super(id, x, y, Math.random() * 2 * Math.PI, Constants.PLAYER_SPEED);
         this.username = username;
         this.hp = Constants.PLAYER_MAX_HP;
-        this.fireCooldown = 0;
+        this.fireCooldown = false;
         this.score = Constants.PLAYER_STARTING_GOLD;
         this.triedToShoot = false;
         this.triedToDash = false;
@@ -24,7 +24,8 @@ class Player extends ObjectClass{
         this.playingDeathAnimation = false;
         this.dashCooldown = 0;
         this.dashRatio = this.dashCooldown / Constants.PLAYER_DASH_COOLDOWN;
-        this.fire = this.fireCooldown / Constants.PLAYER_FIRE_COOLDOWN;
+        this.fire = 1;
+        this.fireState = 0;//0 = recharging, 1=charged/idle
         this.canMove = [true, true, true, true]; // x right, x left, y up, y down
     }
 
@@ -35,6 +36,28 @@ class Player extends ObjectClass{
 
         this.score += dt * Constants.SCORE_PER_SECOND;
         this.animationCooldown -= dt;
+
+        if (this.fireCooldown == true){
+            if (this.animationCooldown <= 0){//this does not neet to change animation cooldown because animation cooldown is already always being calculated
+                if (this.fire < 9){
+                    this.fire++;
+                }
+                if (this.fire > 8){
+                    this.fireCooldown = false;
+                    this.fireState = 1;
+                    this.fire = 1;
+                }
+            }
+        }
+        if (this.fireState == 1){
+            if (this.animationCooldown <= 0){
+                if (this.fire < 6){
+                    this.fire++;
+                }else{
+                    this.fire = 1;
+                }
+            }
+        }
 
         if (!this.recalling && this.hp > 0){
             if (this.animationCooldown <= 0){
@@ -95,6 +118,7 @@ class Player extends ObjectClass{
             }
         }
 
+
         
         //updates location and makes sure the player is within bounds of the map size
         //Run collision detection to see if the player can move in a given direction
@@ -142,18 +166,19 @@ class Player extends ObjectClass{
             this.recallTimer -= dt;
         }
 
-        this.fireCooldown -= dt;
         //I need to half the current dash cooldown if a player hits another with a fireball
         this.dashCooldown -= dt;
-        this.fire = this.fireCooldown / Constants.PLAYER_FIRE_COOLDOWN;
+        //this.fire = this.fireCooldown / Constants.PLAYER_FIRE_COOLDOWN; this.fire being rebranded to frame 1-9 of fireball recharge
         this.dashRatio = this.dashCooldown / Constants.PLAYER_DASH_COOLDOWN;
         //console.log(`fire(player): ${this.fire}`);
-        if (this.fireCooldown <= 0 && this.triedToShoot){
+        if (this.fireCooldown == false && this.triedToShoot){
             //need to establish bullets to have their own velocity plus the player velocity
             //need to start a countdown timer that communicates with render.js to display the shooting cooldown correctly
             //this is a test
-            this.fireCooldown = Constants.PLAYER_FIRE_COOLDOWN;
+            this.fireCooldown = true;
+            this.fireState = 0;
             this.triedToShoot = false;
+            this.fire = 1;//reset animation
             return new Fireball(this.id, this.x, this.y, this.mDir);
         }
         if (this.dashCooldown <= 0 && this.triedToDash){
@@ -162,7 +187,7 @@ class Player extends ObjectClass{
             this.triedToDash = false;
             this.x = this.dashX;
             this.y = this.dashY;
-            this.fireCooldown = 0; // let the player shoot again right after dashing
+            this.fireCooldown = false; // let the player shoot again right after dashing
             //add some distance to the x and y coordinates of the parent component(super.x, super.y)
             //console.log(`player x: ${this.getX()} y: ${this.getY()}\nmouse x: ${this.mouseX} y: ${this.mouseY}`);
             //let d = Math.sqrt((this.getX() - this.))
@@ -243,6 +268,7 @@ class Player extends ObjectClass{
             idle: this.idle,
             recalling: this.recalling,
             dying: this.playingDeathAnimation,
+            fireState: this.fireState,
         };
     }
 }
