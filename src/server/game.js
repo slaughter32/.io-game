@@ -63,6 +63,7 @@ class Game{
           }
         }
         this.players[socket.id] = new Player(socket.id, username, x, y);
+        this.createUpdate(this.players[socket.id]);
     }
 
     removePlayer(socket){
@@ -294,7 +295,6 @@ class Game{
           healpoints: this.activeHealPoints,
           message: this.globalServerMessage,
           leaderboard: this.top10,
-          activePlayers: this.activePlayers,
         };
     }
 }

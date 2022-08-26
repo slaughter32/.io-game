@@ -11,6 +11,9 @@ const Constants = require('../shared/constants');
 
 const { PLAYER_RADIUS, PLAYER_MAX_HP, BULLET_RADIUS, MAP_SIZE } = Constants;
 
+let top10 = [];
+let currentPlayers = 0;
+
 // Get the canvas graphics context
 const canvas = document.getElementById('game-canvas');
 const context = canvas.getContext('2d');
@@ -430,25 +433,46 @@ function renderCapAndHealPoints(capturepoints, healpoints, me, player){
 }
 
 function renderMainMenu() {
-  const { leaderboard, activePlayers } = getCurrentState();
+  const { leaderboard } = getCurrentState();
   const t = Date.now() / 7500;
   const x = MAP_SIZE / 2 + 800 * Math.cos(t);
   const y = MAP_SIZE / 2 + 800 * Math.sin(t);
   //renderBackground(x, y);
-  let fontString = `${canvas.width / 50}px Comic Sans MS`;
+  let fontString = `${canvas.height / 50}px Comic Sans MS`;
   context.font = fontString;
+  // if (activePlayers != null){
+  //   context.fillText(`Username        Gold    Active Players: ${activePlayers}`, 25, 20);
+  // }else{
+  //   context.fillText(`Username        Gold    Active Players: ${currentPlayers}`, 25, 20);
+  // }
+  context.fillStyle = 'black';
+  context.fillRect(0, 0, canvas.width, canvas.height);
   context.fillStyle = 'white';
-  context.fillText('Username        Gold', 25, 10);
-  for (let i = 0; i < leaderboard.length; i++){
-    context.fillText(`${leaderboard[i][0]}      ${leaderboard[i][1]}`, 25, ((canvas.width / 50) * (i + 1)) + 10);
+  context.fillText(`Username       Gold    Active Players: ${currentPlayers}`, 15, 20);
+  if (leaderboard != null){
+    for (let i = 0; i < leaderboard.length; i++){
+      context.fillText(`${leaderboard[i][0]}      ${leaderboard[i][1]}`, 15, ((canvas.height / 50) * (i + 1)) + 20);
+    }
+  }else{
+    for (let i = 0; i < top10.length; i++){
+      context.fillText(`${top10[i][0]}      ${top10[i][1]}`, 15, ((canvas.height / 50) * (i + 1)) + 20);
+    }
   }
+
 
   // Rerun this render function on the next frame
   animationFrameRequestId = requestAnimationFrame(renderMainMenu);
 }
+export function setTop10(top){
+  console.log('happened');
+  top10 = top;
+}
+export function setCurrentUsers(users){
+  console.log('happened');
+  currentPlayers = users;
+}
 
 animationFrameRequestId = requestAnimationFrame(renderMainMenu);
-
 // Replaces main menu rendering with game rendering.
 export function startRendering() {
   cancelAnimationFrame(animationFrameRequestId);

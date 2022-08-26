@@ -3,6 +3,8 @@
 import io from 'socket.io-client';
 import { throttle } from 'throttle-debounce';
 import { processGameUpdate } from './state';
+import { setTop10 } from './render';
+import { setCurrentUsers } from './render';
 
 const Constants = require('../shared/constants');
 
@@ -31,7 +33,8 @@ export const connect = onGameOver => (
     });
   })
 );
-
+socket.on('startMenu', setTop10);
+socket.on('currentPlayers', setCurrentUsers);
 export const play = username => {
   socket.emit(Constants.MSG_TYPES.JOIN_GAME, username);
 };

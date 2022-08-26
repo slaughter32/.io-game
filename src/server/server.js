@@ -29,12 +29,17 @@ console.log(`Server listening on port ${port}`);
 // Setup socket.io
 const io = socketio(server);
 
+// Setup the Game
+const game = new Game();
+
 // Listen for socket.io connections
 io.on('connection', socket => {
   console.log('Player connected!', socket.id);
   currentUsers++;
   console.log("Current Players:", currentUsers);
-
+  console.log(game.top10);
+  socket.emit('startMenu', game.top10);
+  socket.emit('currentPlayers', currentUsers);
   socket.on(Constants.MSG_TYPES.JOIN_GAME, joinGame);
   socket.on(Constants.MSG_TYPES.INPUT, handleInput);
   socket.on(Constants.MSG_TYPES.SHOOT, shoot);
@@ -44,8 +49,7 @@ io.on('connection', socket => {
   socket.on('disconnect', onDisconnect);
 });
 
-// Setup the Game
-const game = new Game();
+
 
 function joinGame(username) {
   game.addPlayer(this, username);

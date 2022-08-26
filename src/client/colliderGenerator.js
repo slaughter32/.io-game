@@ -65,6 +65,10 @@ if (Constants.COLLISION_EDITOR){ //only edit colliders if you are supposed to
             const {me} = getCurrentState();
             console.log(me.x, me.y);
         }
+        if (e.key == 'o'){
+            //delete collider mouse collides with
+            
+        }
     });
     function createDebugRect(finalX, finalY){
         const { me, others, bullets, fire } = getCurrentState();
