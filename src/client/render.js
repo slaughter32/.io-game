@@ -116,7 +116,7 @@ function renderBackground(x, y) {
 
 // Renders a player at the given coordinates
 function renderPlayer(me, player) {
-  const { x, y, direction, fire, dash, fireState } = player;
+  const { x, y, direction, fire, dash, fireState, mouseDir } = player;
   const canvasX = canvas.width / 2 + x - me.x;
   const canvasY = canvas.height / 2 + y - me.y;
 
@@ -207,6 +207,25 @@ function renderPlayer(me, player) {
     width,
     height,
   );
+    //fireball
+    let fireImage = 'OrbSpawn.png';
+    context.translate(Math.cos(mouseDir - Math.PI /2) * Constants.IDLE_DIST_FROM_PLAYER, Math.sin(mouseDir - Math.PI/2) * Constants.IDLE_DIST_FROM_PLAYER);
+    //firefinder
+    //add a 'state' variable: 0=recharging, 1=charged/idle
+    if (fireState == 1){
+      fireImage = 'OrbFire.png';
+    }
+    context.drawImage(
+      getAsset(fireImage),
+      30 * (Math.round(fire) - 1),
+      0,
+      30,
+      30,
+      -15,
+      -15,
+      30,
+      30,
+     );
   context.restore();
 
 
@@ -256,29 +275,29 @@ function renderPlayer(me, player) {
   context.fillText(me.score, 103 * scale, 63 * scale);
 
 
-  //fireball
-  context.save();
-  let fireImage = 'OrbSpawn.png';
-  const dir = getDir();
-  context.translate(Math.cos(dir - Math.PI /2) * Constants.IDLE_DIST_FROM_PLAYER + canvas.width / 2, Math.sin(dir - Math.PI/2) * Constants.IDLE_DIST_FROM_PLAYER + canvas.height / 2);
-  //firefinder
-  //add a 'state' variable: 0=recharging, 1=charged/idle
-  if (fireState == 1){
-    fireImage = 'OrbFire.png';
-  }
-  context.drawImage(
-    getAsset(fireImage),
-    30 * (Math.round(fire) - 1),
-    0,
-    30,
-    30,
-    -15,
-    -15,
-    30,
-    30,
-   );
-    //context.rotate(dir);
-  context.restore();
+  // //fireball
+  // context.save();
+  // let fireImage = 'OrbSpawn.png';
+  // const dir = getDir();
+  // context.translate(Math.cos(dir - Math.PI /2) * Constants.IDLE_DIST_FROM_PLAYER + canvas.width / 2, Math.sin(dir - Math.PI/2) * Constants.IDLE_DIST_FROM_PLAYER + canvas.height / 2);
+  // //firefinder
+  // //add a 'state' variable: 0=recharging, 1=charged/idle
+  // if (fireState == 1){
+  //   fireImage = 'OrbFire.png';
+  // }
+  // context.drawImage(
+  //   getAsset(fireImage),
+  //   30 * (Math.round(fire) - 1),
+  //   0,
+  //   30,
+  //   30,
+  //   -15,
+  //   -15,
+  //   30,
+  //   30,
+  //  );
+  //   //context.rotate(dir);
+  // context.restore();
 
   //locally we want a cooldown to display for firing, for now that will go in the place of the healthbar for other ships
   //I now need to pass through server time???

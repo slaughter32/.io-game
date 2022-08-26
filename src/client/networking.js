@@ -53,5 +53,5 @@ export const recall = throttle(20, () => {
   socket.emit(Constants.MSG_TYPES.RECALL);
 });
 export const sendServerMouseDir = throttle(20, (mouseDir) => {
-  //socket.emit();
+  socket.emit(Constants.MSG_TYPES.MOUSE, mouseDir);
 });
