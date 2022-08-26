@@ -26,7 +26,7 @@ function setCanvasDimensions() {
 }
 let animationFrameRequestId;
 function render() {
-  const { me, others, bullets, capturepoints, healpoints, message } = getCurrentState();
+  const { me, others, bullets, capturepoints, healpoints, message, leaderboard } = getCurrentState();
   if (me) {//only does this for the local player, not other clients
     //Rendering Order: Background, Map Points, Bullets, Players, UI, 
     //draw big black square in the abyss
@@ -430,10 +430,18 @@ function renderCapAndHealPoints(capturepoints, healpoints, me, player){
 }
 
 function renderMainMenu() {
+  const { leaderboard, activePlayers } = getCurrentState();
   const t = Date.now() / 7500;
   const x = MAP_SIZE / 2 + 800 * Math.cos(t);
   const y = MAP_SIZE / 2 + 800 * Math.sin(t);
   //renderBackground(x, y);
+  let fontString = `${canvas.width / 50}px Comic Sans MS`;
+  context.font = fontString;
+  context.fillStyle = 'white';
+  context.fillText('Username        Gold', 25, 10);
+  for (let i = 0; i < leaderboard.length; i++){
+    context.fillText(`${leaderboard[i][0]}      ${leaderboard[i][1]}`, 25, ((canvas.width / 50) * (i + 1)) + 10);
+  }
 
   // Rerun this render function on the next frame
   animationFrameRequestId = requestAnimationFrame(renderMainMenu);

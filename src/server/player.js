@@ -236,6 +236,9 @@ class Player extends ObjectClass{
     setSpeed(speed){
         this.speed = speed;
     }
+    setMouse(dir){
+        this.mouseDir = dir;
+    }
     getScore(){
         return this.score;
     }
@@ -257,7 +260,7 @@ class Player extends ObjectClass{
     }
     serializeForUpdate(){
         //console.log(this.id, this.direction, this.hp, this.fire);
-        return{
+        return{//ideally I should minimize these as some may be redundant and they are sent frequently
             ...(super.serializeForUpdate()),
             direction: this.direction,
             hp: this.hp,
@@ -269,6 +272,7 @@ class Player extends ObjectClass{
             recalling: this.recalling,
             dying: this.playingDeathAnimation,
             fireState: this.fireState,
+            mouseDir: this.mouseDir,
         };
     }
 }

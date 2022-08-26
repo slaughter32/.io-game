@@ -3,6 +3,7 @@ import { updateDirection } from "./networking";
 import { tryShoot } from "./networking";
 import { tryDash } from "./networking";
 import { recall } from './networking';
+import { sendServerMouseDir } from './networking';
 const Constants = require('../shared/constants');
 //mouse for direction the player is looking/aiming
 //wasd for movement
@@ -32,6 +33,7 @@ function onMouseClick(event){
 }
 function mouseDirection(event){
   mouseDir = Math.atan2(event.clientX - window.innerWidth / 2, window.innerHeight / 2 - event.clientY);
+  sendServerMouseDir(mouseDir); //later this allows me to remove mousedir from trydash and tryshoot
 }
 function Dash(event){
   if (event.keyCode == 32){//32 = SPACE
@@ -48,14 +50,14 @@ function attemptRecall(event){
 
 //Really interesting movement code lol
 let speed = Constants.PLAYER_SPEED;
+let height = window.innerHeight;
+let width = window.innerWidth;
 let x = width / 2;
 let y = height / 2;
 let w = false;
 let a = false;
 let s = false;
 let d = false;
-let height = window.innerHeight;
-let width = window.innerWidth;
 function onKeyDown(event){
   if (event.key === 'd'){
     d = true;
@@ -119,6 +121,16 @@ function handleInput(x, y) {
   const dir = Math.atan2(x - window.innerWidth / 2, window.innerHeight / 2 - y);
   updateDirection(dir, speed);
 }
+function resetInput(){
+  w = false;
+  a = false;
+  s = false;
+  d = false;
+}
+function windowRezise(event){
+  width = window.innerWidth;
+  height = window.innerHeight;
+}
 
 //MOBILE
 
@@ -126,6 +138,8 @@ function handleInput(x, y) {
 
 //BOTH
 export function startCapturingInput(){
+    resetInput();//prevent movement bugs
+    window.addEventListener('resize', windowRezise);//prevent movement bugs when window is resized
     window.addEventListener('mousemove', mouseDirection);
     window.addEventListener('keydown', onKeyDown);
     window.addEventListener('keyup', onKeyUp);
@@ -135,6 +149,7 @@ export function startCapturingInput(){
     //window.addEventListener('keydown', onKeyInput);
 }
 export function stopCapturingInput(){
+    window.removeEventListener('resize', windowRezise);
     window.removeEventListener('mousemove', mouseDirection);
     window.removeEventListener('keydown', onKeyDown);
     window.removeEventListener('keyup', onKeyUp);

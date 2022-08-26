@@ -5,7 +5,6 @@ import { startRendering, stopRendering } from './render';
 import { startCapturingInput, stopCapturingInput, start } from './input';
 import { downloadAssets } from './assets';
 import { initState } from './state';
-import { setLeaderboardHidden } from './leaderboard';
 
 // I'm using a tiny subset of Bootstrap here for convenience - there's some wasted CSS,
 // but not much. In general, you should be careful using Bootstrap because it makes it
@@ -32,7 +31,6 @@ Promise.all([
     startCapturingInput();
     start();//start runs from ./input.js and prevents the player from thinking it should move before any input is given
     startRendering();
-    setLeaderboardHidden(false);
   };
 }).catch(console.error);
 
@@ -40,5 +38,4 @@ function onGameOver() {
   stopCapturingInput();
   stopRendering();
   playMenu.classList.remove('hidden');
-  setLeaderboardHidden(true);
 }

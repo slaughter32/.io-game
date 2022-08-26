@@ -27,7 +27,7 @@ module.exports = Object.freeze({
     CP_CAPTURE_RADIUS: 50,
     CAPTURE_POINT_BONUS_GOLD: 1000,
     //capture point requirements
-    CAPTURE_POINT_REQUIRED_GOLD: 2000, //gold required to have been profited by server
+    CAPTURE_POINT_REQUIRED_GOLD: 1000, //gold required to have been profited by server (default 2000, lowered in testing to make more fun
     CAPTURE_POINT_REQUIRED_TIME: 300, //in seconds till next spawn criteria (5 mins)
     //heal point
     HEAL_POINT_TIME: 3,//in seconds
@@ -61,6 +61,7 @@ module.exports = Object.freeze({
         DASH: 'dash',
         RECALL: 'recall',
         RECALLED: 'recalled',//occurs on successful recall
+        MOUSE: 'updatePlayerMouseDir',
         GAME_OVER: 'dead',
     },
 });

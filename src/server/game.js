@@ -69,7 +69,8 @@ class Game{
         delete this.sockets[socket.id];//perhaps dont do this and dont create a new one for them when they click start since they already have one
         delete this.players[socket.id];
     }
-
+    //minimize things taking data from client to server, mousedir now only needs to be sent through the mouseDir changer, which may
+    //be best combined into handleInput to make it easier to read (refactor notes)
     handleInput(socket, dir){
         if (this.players[socket.id]){
             this.players[socket.id].setDirection(dir);
@@ -96,6 +97,11 @@ class Game{
         this.players[socket.id].setSpeed(speed);
       }
     }
+    updatePlayerMouseDir(socket, dir){
+      if (this.players[socket.id]){
+        this.players[socket.id].setMouse(dir);
+      }
+    }
 
     update(){
         //calculate time elapsed
@@ -103,15 +109,20 @@ class Game{
         const dt = (now - this.lastUpdateTime) / 1000;
         this.lastUpdateTime = now;
 
+        this.timeSinceLastCap += dt;
+
         if (this.serverProfitSinceCap >= Constants.CAPTURE_POINT_REQUIRED_GOLD && this.fiveminmessage){
-          this.timeSinceLastCap += dt;//countdown starts
+          //countdown starts
           this.globalServerMessage = "Capture Point Spawning in 5 Minutes";
+          this.fiveminmessage = false;
         }
         this.timeTillHP -= dt;
-        if (Constants.CAPTURE_POINT_REQUIRED_TIME - this.timeSinceLastCap <= 60 && this.messageTime == Constants.GLOBAL_MESSAGE_LENGTH && this.oneminmessage){
+        if (Constants.CAPTURE_POINT_REQUIRED_TIME - this.timeSinceLastCap <= 60 && this.serverProfitSinceCap >= Constants.CAPTURE_POINT_REQUIRED_GOLD && this.messageTime == Constants.GLOBAL_MESSAGE_LENGTH && this.oneminmessage){
           this.globalServerMessage = "Capture Point Spawning in 1 Minute";
+          this.fiveminmessage = false;
         }
         //set active capture and heal points
+        //console.log(this.timeSinceLastCap - Constants.CAPTURE_POINT_REQUIRED_TIME, this.serverProfitSinceCap, this.activeCapturePoints.length);
         if (this.timeSinceLastCap >= Constants.CAPTURE_POINT_REQUIRED_TIME && this.serverProfitSinceCap >= Constants.CAPTURE_POINT_REQUIRED_GOLD && this.activeCapturePoints.length <= 0){
           if (this.lastActiveCP < this.activeCapturePoints.length){
             this.lastActiveCP++;
@@ -136,13 +147,13 @@ class Game{
           activePoint.update(dt);
           //console.log(activePoint);
           if (activePoint.timeLeft <= 0){
-            this.fiveminmessage = true;
-            this.oneminmessage = true;
             activePoint.currentPlayer.score += Constants.CAPTURE_POINT_BONUS_GOLD;
             this.globalServerMessage = "Objective Has Been Taken";
             this.activeCapturePoints.pop();
             this.serverProfitSinceCap = 0;
             this.timeSinceLastCap = 0;
+            this.fiveminmessage = true;
+            this.oneminmessage = true;
           }
         }
         for (let i = 0; i < this.activeHealPoints.length; i++){
@@ -161,11 +172,6 @@ class Game{
         if (this.globalServerMessage != ''){
           this.messageTime -= dt;
           if (this.messageTime <= 0){
-            if (this.globalServerMessage = 'Capture Point Spawning in 5 Minutes'){
-              this.fiveminmessage = false;
-            }else if (this.globalServerMessage = 'Capture Point Spawning in 1 Minute'){
-              this.oneminmessage = false;
-            }
             this.globalServerMessage = '';
             this.messageTime = Constants.GLOBAL_MESSAGE_LENGTH;
           }
@@ -207,13 +213,13 @@ class Game{
             if (hitID.hp <= 0){
               let gold = Constants.GOLD_ON_KILL;
               this.players[b.parentID].onKill(gold);
-              hitID.onDeath();
               let insurance = (hitID.score - 1000) / 2;
               if (insurance > 0){
                 this.serverProfitSinceCap += hitID.score - 400 - insurance;
               }else{
                 this.serverProfitSinceCap += hitID.score - 400;
               }
+              hitID.onDeath();
             }
 
           }
@@ -225,7 +231,7 @@ class Game{
           const socket = this.sockets[playerID];
           const player = this.players[playerID];
           if (player.hp <= 0 && !player.playingDeathAnimation) {
-            console.log('killed player');
+            //console.log('killed player');
             socket.emit(Constants.MSG_TYPES.GAME_OVER);
             this.tryTop10(player);
             this.removePlayer(socket);
@@ -243,11 +249,10 @@ class Game{
     
         // Send a game update to each player every other time
         if (this.shouldSendUpdate) {
-          const leaderboard = this.getLeaderboard();
           Object.keys(this.sockets).forEach(playerID => {
             const socket = this.sockets[playerID];
             const player = this.players[playerID];
-            socket.emit(Constants.MSG_TYPES.GAME_UPDATE, this.createUpdate(player, leaderboard));
+            socket.emit(Constants.MSG_TYPES.GAME_UPDATE, this.createUpdate(player));
           });
           this.shouldSendUpdate = false;
         } else {
@@ -255,9 +260,9 @@ class Game{
         }
       }
       tryTop10(player){
-        let username = player.username
-        if (username = ''){
-          username = 'anonymous'
+        let username = player.username;
+        if (username == ''){
+          username = 'anonymous';
         }
         if (this.top10.length < 10){
           this.top10.push([username, player.score]);
@@ -271,14 +276,8 @@ class Game{
         }
         console.log(this.top10);
       }
-      getLeaderboard() {
-        return Object.values(this.players)
-          .sort((p1, p2) => p2.score - p1.score)
-          .slice(0, 5)
-          .map(p => ({ username: p.username, score: Math.round(p.score) }));
-      }
     
-      createUpdate(player, leaderboard) {
+      createUpdate(player) {
         const nearbyPlayers = Object.values(this.players).filter(
           p => p !== player && p.distanceTo(player) <= Constants.MAP_SIZE / 4,
         );
@@ -294,7 +293,8 @@ class Game{
           capturepoints: this.activeCapturePoints,
           healpoints: this.activeHealPoints,
           message: this.globalServerMessage,
-          leaderboard,
+          leaderboard: this.top10,
+          activePlayers: this.activePlayers,
         };
     }
 }

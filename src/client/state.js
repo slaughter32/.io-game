@@ -70,6 +70,8 @@ export function getCurrentState() {
       capturepoints: baseUpdate.capturepoints,
       healpoints: baseUpdate.healpoints,
       message: baseUpdate.message,
+      leaderboard: baseUpdate.leaderboard,
+      activePlayers: baseUpdate.activePlayers,
     };
   }
 }

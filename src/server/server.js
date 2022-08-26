@@ -40,6 +40,7 @@ io.on('connection', socket => {
   socket.on(Constants.MSG_TYPES.SHOOT, shoot);
   socket.on(Constants.MSG_TYPES.DASH, dash);
   socket.on(Constants.MSG_TYPES.RECALL, recall);
+  socket.on(Constants.MSG_TYPES.MOUSE, updatePlayerMouseDir);
   socket.on('disconnect', onDisconnect);
 });
 
@@ -49,7 +50,9 @@ const game = new Game();
 function joinGame(username) {
   game.addPlayer(this, username);
 }
-
+function updatePlayerMouseDir(mouseDir){
+  game.updatePlayerMouseDir(this, mouseDir);
+}
 function handleInput(dir, speed) {
   game.handleInput(this, dir);
   game.handleSpeed(this, speed);
