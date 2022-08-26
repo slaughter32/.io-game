@@ -38,8 +38,8 @@ io.on('connection', socket => {
   currentUsers++;
   console.log("Current Players:", currentUsers);
   console.log(game.top10);
-  socket.emit('startMenu', game.top10);
-  socket.emit('currentPlayers', currentUsers);
+  socket.emit('startMenu', game.top10);//update menu stats
+  socket.emit('currentPlayers', currentUsers);//update menu stats
   socket.on(Constants.MSG_TYPES.JOIN_GAME, joinGame);
   socket.on(Constants.MSG_TYPES.INPUT, handleInput);
   socket.on(Constants.MSG_TYPES.SHOOT, shoot);

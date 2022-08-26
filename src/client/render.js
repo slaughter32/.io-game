@@ -433,30 +433,18 @@ function renderCapAndHealPoints(capturepoints, healpoints, me, player){
 }
 
 function renderMainMenu() {
-  const { leaderboard } = getCurrentState();
   const t = Date.now() / 7500;
   const x = MAP_SIZE / 2 + 800 * Math.cos(t);
   const y = MAP_SIZE / 2 + 800 * Math.sin(t);
   //renderBackground(x, y);
   let fontString = `${canvas.height / 50}px Comic Sans MS`;
   context.font = fontString;
-  // if (activePlayers != null){
-  //   context.fillText(`Username        Gold    Active Players: ${activePlayers}`, 25, 20);
-  // }else{
-  //   context.fillText(`Username        Gold    Active Players: ${currentPlayers}`, 25, 20);
-  // }
   context.fillStyle = 'black';
   context.fillRect(0, 0, canvas.width, canvas.height);
   context.fillStyle = 'white';
-  context.fillText(`Username       Gold    Active Players: ${currentPlayers}`, 15, 20);
-  if (leaderboard != null){
-    for (let i = 0; i < leaderboard.length; i++){
-      context.fillText(`${leaderboard[i][0]}      ${leaderboard[i][1]}`, 15, ((canvas.height / 50) * (i + 1)) + 20);
-    }
-  }else{
-    for (let i = 0; i < top10.length; i++){
-      context.fillText(`${top10[i][0]}      ${top10[i][1]}`, 15, ((canvas.height / 50) * (i + 1)) + 20);
-    }
+  context.fillText(`Username       Gold    Active Players: ${currentPlayers}    (Stats Update on Death/Refresh)`, 15, 20);
+  for (let i = 0; i < top10.length; i++){
+    context.fillText(`${top10[i][0]}      ${top10[i][1]}`, 15, ((canvas.height / 50) * (i + 1)) + 20);
   }
 
 
