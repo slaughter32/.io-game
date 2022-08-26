@@ -1,7 +1,7 @@
 import { size } from 'lodash';
 import { generate } from 'shortid';
 import { getCurrentState } from './state';
-import { getBFA } from './theBigColliderArray';
+import { getBFA, setBFA } from './theBigColliderArray';
 import { getBFAMapSize } from './theBigColliderArray';
 const Constants = require('../shared/constants');
 
@@ -12,33 +12,39 @@ let originalMapSize = getBFAMapSize();
 let mouseDownX, mouseDownY, mouseX, mouseY;
 let creating = false;
 let doneCreating = false;
-
-if (Constants.COLLISION_EDITOR){ //only edit colliders if you are supposed to
-    debugBoxes = getBFA();
-    //if array already exists at run, check to see if the map size has changed then scale the array accordingly if it has.
-    if (debugBoxes != null){
-        console.log("debugBoxes set to existing collision array");
-        console.log("DebugBoxes: " + debugBoxes);
-        if (Constants.MAP_SIZE != getBFAMapSize()){
-            let sizeDiff =  Constants.MAP_SIZE / getBFAMapSize();
-            console.log(`the map size has been changed since editing these colliders. The edited map size was ${sizeDiff} times larger than now`);
-            console.log(`debugBoxes Size: ${debugBoxes.length}`);
-            for (let i = 0; i < debugBoxes.length; i++){
-                debugBoxes[i][0] = debugBoxes[i][0] * sizeDiff;
-                debugBoxes[i][1] = debugBoxes[i][1] * sizeDiff;
-                for (let o = 2; o < 6; o++){
-                    //if the map size has increased (you can see less on your screen since the map is bigger) the colliders need to scale accordingly.
-                    //ex: 1600 editing becomes 6400 in-game--> player starting pos becomes 3200, 3200 instead of 800, 800
-                    //the world positions need to multiply by 4 (me.x, me.y, debugboxes[-][4] and [5])
-                    //the width and height needs to multiply by 4
-                    //screenspace coordinates are wonky, you would think they remain the same though...
-
-                    //the screenspace coordinates seem to scale by a much larger amount the further from the center they are
-                    debugBoxes[i][o] = debugBoxes[i][o] * sizeDiff; // lol
+let BFA = getBFA();
+if (Constants.COLLISION_EDITOR){
+    generateDebugBoxes();
+}
+function generateDebugBoxes(){
+    if (Constants.COLLISION_EDITOR){ //only edit colliders if you are supposed to
+        debugBoxes = getBFA();
+        //if array already exists at run, check to see if the map size has changed then scale the array accordingly if it has.
+        if (debugBoxes != null){
+            //console.log("debugBoxes set to existing collision array");
+            //console.log("DebugBoxes: " + debugBoxes);
+            if (Constants.MAP_SIZE != getBFAMapSize()){
+                let sizeDiff =  Constants.MAP_SIZE / getBFAMapSize();
+                //console.log(`the map size has been changed since editing these colliders. The edited map size was ${sizeDiff} times larger than now`);
+                //console.log(`debugBoxes Size: ${debugBoxes.length}`);
+                for (let i = 0; i < debugBoxes.length; i++){
+                    debugBoxes[i][0] = debugBoxes[i][0] * sizeDiff;
+                    debugBoxes[i][1] = debugBoxes[i][1] * sizeDiff;
+                    for (let o = 2; o < 6; o++){
+                        //if the map size has increased (you can see less on your screen since the map is bigger) the colliders need to scale accordingly.
+                        //ex: 1600 editing becomes 6400 in-game--> player starting pos becomes 3200, 3200 instead of 800, 800
+                        //the world positions need to multiply by 4 (me.x, me.y, debugboxes[-][4] and [5])
+                        //the width and height needs to multiply by 4
+                        //screenspace coordinates are wonky, you would think they remain the same though...
+    
+                        //the screenspace coordinates seem to scale by a much larger amount the further from the center they are
+                        debugBoxes[i][o] = debugBoxes[i][o] * sizeDiff; // lol
+                    }
                 }
             }
         }
-    }
+}
+
 
     window.addEventListener('mousedown', (e) => {
         mouseDownX = e.clientX;
@@ -66,12 +72,52 @@ if (Constants.COLLISION_EDITOR){ //only edit colliders if you are supposed to
             console.log(me.x, me.y);
         }
         if (e.key == 'o'){
+            const { me } = getCurrentState();
+            let tempBFA = getBFA();
             //delete collider mouse collides with
-            
+            let temp = objectBFACollision(mouseX - (window.innerWidth / 2) + me.x, mouseY - (window.innerHeight / 2) + me.y, 50);
+            if (temp.length > 0){
+                for (let i = 0; i < tempBFA.length; i++){
+                    for (let o = 0; o < temp.length; o++){
+                        if (tempBFA[i] == temp[o]){
+                            console.log('popped');
+                            tempBFA.pop(tempBFA[i]);
+                        }
+                    }
+                }
+                setBFA(tempBFA);
+                generateDebugBoxes();
+            }
+
         }
     });
+    function objectBFACollision(x, y, radius){
+        let whichBox = [];
+        for (let i = 0; i < BFA.length; i++){
+            let centX = (BFA[i][4] + BFA[i][0] + (BFA[i][2] / 2));
+            let centY = (BFA[i][5] + BFA[i][1] + (BFA[i][3] / 2));
+            let circleDistanceX = Math.abs(x - centX);
+            let circleDistanceY = Math.abs(y - centY);
+            let width = BFA[i][2];
+            let height = BFA[i][3];
+            if (circleDistanceX < radius && circleDistanceY < radius){
+                console.log('centx, y', centX, centY, 'mouse x, y', x, y);
+                whichBox.push(BFA[i]);
+            }
+            //if (Math.hypot(centX - x, centY - y) > Constants.COLLISION_DIST){continue}; //no collision
+            // if (circleDistanceX > (width + radius)) {continue}; //no collision
+            // if (circleDistanceY > (height + radius)) {continue}; //no collision
+            // if (circleDistanceX <= (width/2)) {whichBox.push(BFA[i]); console.log('collision'); break}; //collision
+            // if (circleDistanceY <= (height/2)) {whichBox.push(BFA[i]); console.log('collision'); break}; //collision
+        }
+        if (whichBox.length > 0){
+            console.log('collision');
+            return whichBox;
+        }
+        return [];
+    }
     function createDebugRect(finalX, finalY){
-        const { me, others, bullets, fire } = getCurrentState();
+        const { me } = getCurrentState();
         let temp = []; //temporary array to hold a debugBox
         if (finalX - mouseDownX < 5){
             return;
@@ -86,7 +132,7 @@ if (Constants.COLLISION_EDITOR){ //only edit colliders if you are supposed to
     }
     //returns the points of the actual colliders (all four corners of each collision box)
     //uses debugBoxes to get the points, when editing colliders you should be able to see all of these
-    function generateColliders(playerX, playerY){
+    function generateColliders(){
         let colliders = [];
         for (let i = 0; i < debugBoxes.length; i++){
             let coordSet = [];//each temp contains 2 coordinates, and 4 elements.. 

@@ -235,7 +235,7 @@ class Game{
             //console.log('killed player');
             socket.emit(Constants.MSG_TYPES.GAME_OVER);
             this.tryTop10(player);
-            socket.emit('startMenu', game.top10);//update menu stats
+            socket.emit('startMenu', this.top10);//update menu stats
             this.removePlayer(socket);
           }
           if (player.recallTimer <= 0){
