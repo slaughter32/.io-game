@@ -128,7 +128,7 @@ class Player extends ObjectClass{
         //this.y -= dt * this.speed * Math.cos(this.direction); // > 0 or < 0
         //ideally the player should only try to move in a given direction if it can
         //this.canMove = collisions.checkPlayerCollisions(this);
-        if (!this.recalling && !this.playingDeathAnimation) {//dont allow the player to move if the player is recalling
+        if (!this.recalling && !this.playingDeathAnimation) {//dont allow the player to move if the player is recalling or dead
             if (this.canMove[0] != 0 || this.canMove[1] != 0){
                 if (this.canMove[0] != 0){//restrict right
                     if (Math.sin(this.direction) < 0){

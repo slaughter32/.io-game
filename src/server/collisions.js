@@ -65,11 +65,11 @@ function checkPlayerCollisions(player){
         let centY = (BFA[i][1] + BFA[i][3]) / 2;
         if (Math.hypot(centX - player.x, centY - player.y) > Constants.COLLISION_DIST){continue};//only check nearby colliders
         //X
-        if (Math.abs(player.x - BFA[i][2]) < Constants.PLAYER_RADIUS && player.y < BFA[i][3] + Constants.PLAYER_RADIUS && player.y > BFA[i][1] - Constants.PLAYER_RADIUS) {colls[1] = BFA[i][2] + Constants.PLAYER_RADIUS};
-        if (Math.abs(player.x - BFA[i][0]) < Constants.PLAYER_RADIUS && player.y < BFA[i][3] + Constants.PLAYER_RADIUS && player.y > BFA[i][1] - Constants.PLAYER_RADIUS) {colls[0] = BFA[i][0] - Constants.PLAYER_RADIUS};
+        if (Math.abs(player.x - BFA[i][2]) < Constants.PLAYER_RADIUS && player.y < BFA[i][3] + Constants.PLAYER_RADIUS && player.y > BFA[i][1] - Constants.PLAYER_RADIUS / 2) {colls[1] = BFA[i][2] + Constants.PLAYER_RADIUS};
+        if (Math.abs(player.x - BFA[i][0]) < Constants.PLAYER_RADIUS && player.y < BFA[i][3] + Constants.PLAYER_RADIUS && player.y > BFA[i][1] - Constants.PLAYER_RADIUS / 2) {colls[0] = BFA[i][0] - Constants.PLAYER_RADIUS};
         //Y
-        if (Math.abs(player.y - BFA[i][3]) < Constants.PLAYER_RADIUS && player.x < BFA[i][2] + Constants.PLAYER_RADIUS && player.x > BFA[i][0] - Constants.PLAYER_RADIUS) {colls[2] = BFA[i][3] + Constants.PLAYER_RADIUS};
-        if (Math.abs(player.y - BFA[i][1]) < Constants.PLAYER_RADIUS && player.x < BFA[i][2] + Constants.PLAYER_RADIUS && player.x > BFA[i][0] - Constants.PLAYER_RADIUS) {colls[3] = BFA[i][1] - Constants.PLAYER_RADIUS; break};
+        if (Math.abs(player.y - BFA[i][3]) < Constants.PLAYER_RADIUS && player.x < BFA[i][2] + Constants.PLAYER_RADIUS && player.x > BFA[i][0] - Constants.PLAYER_RADIUS / 2) {colls[2] = BFA[i][3] + Constants.PLAYER_RADIUS};
+        if (Math.abs(player.y - BFA[i][1]) < Constants.PLAYER_RADIUS && player.x < BFA[i][2] + Constants.PLAYER_RADIUS && player.x > BFA[i][0] - Constants.PLAYER_RADIUS / 2) {colls[3] = BFA[i][1] - Constants.PLAYER_RADIUS};
     }
     return colls;
 }

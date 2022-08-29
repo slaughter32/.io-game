@@ -215,17 +215,19 @@ function renderPlayer(me, player) {
     if (fireState == 1){
       fireImage = 'OrbFire.png';
     }
-    context.drawImage(
-      getAsset(fireImage),
-      30 * (Math.round(fire) - 1),
-      0,
-      30,
-      30,
-      -15,
-      -15,
-      30,
-      30,
-     );
+    if (!player.hp < 1){
+      context.drawImage(
+        getAsset(fireImage),
+        30 * (Math.round(fire) - 1),
+        0,
+        30,
+        30,
+        -15,
+        -15,
+        30,
+        30,
+       ); 
+    }
   context.restore();
 
 
