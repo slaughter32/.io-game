@@ -269,17 +269,17 @@ class Game{
         }
         if (this.top10.length < 10){
           this.top10.push([username, player.score]);
-          this.top10.sort(this.compareSecondColumn);
         }else{
-          for (let i = 0; i < this.top10.length; i++){
+          for (let i = 0; i < 10; i++){
             if (player.score > this.top10[i][1]){
               this.top10.splice(i, 1);
               this.top10.push([username, player.score]);
-              this.top10.sort(this.compareSecondColumn);
+              break;
             }
           }
         }
-        console.log(this.top10);
+        this.top10.sort(this.compareSecondColumn);
+        //console.log(this.top10);
       }
       compareSecondColumn(a, b) {
         if (a[1] === b[1]) {

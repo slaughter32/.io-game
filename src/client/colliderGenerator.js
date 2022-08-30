@@ -45,52 +45,53 @@ function generateDebugBoxes(){
         }
 }
 
-
-    window.addEventListener('mousedown', (e) => {
-        mouseDownX = e.clientX;
-        mouseDownY = e.clientY;
-        creating = true;
-    });
-    window.addEventListener('mouseup', (e) => {
-        doneCreating = true;
-        createDebugRect(e.clientX, e.clientY);
-    });
-    window.addEventListener('mousemove', (e) => {
-        mouseX = e.clientX;
-        mouseY = e.clientY;
-        //console.log(`MouseCanvasPos: ${e.clientX - (window.innerWidth / 2)}, ${e.clientY - (window.innerHeight / 2)}`);
-    });
-    window.addEventListener('keydown', (e) => {
-        if (e.key == 'l'){//collider debug
-            let colls = generateColliders();
-            console.log(colls);
-            console.log(`Colliders as a string:\nMap Size: ${Constants.MAP_SIZE}\n${colls}`);
-            console.log(debugBoxes);
-        }
-        if (e.key == 'p'){//player coords
-            const {me} = getCurrentState();
-            console.log(me.x, me.y);
-        }
-        if (e.key == 'o'){
-            const { me } = getCurrentState();
-            let tempBFA = getBFA();
-            //delete collider mouse collides with
-            let temp = objectBFACollision(mouseX - (window.innerWidth / 2) + me.x, mouseY - (window.innerHeight / 2) + me.y, 50);
-            if (temp.length > 0){
-                for (let i = 0; i < tempBFA.length; i++){
-                    for (let o = 0; o < temp.length; o++){
-                        if (tempBFA[i] == temp[o]){
-                            console.log('popped');
-                            tempBFA.pop(tempBFA[i]);
+    if (Constants.COLLISION_EDITOR){
+        window.addEventListener('mousedown', (e) => {
+            mouseDownX = e.clientX;
+            mouseDownY = e.clientY;
+            creating = true;
+        });
+        window.addEventListener('mouseup', (e) => {
+            doneCreating = true;
+            createDebugRect(e.clientX, e.clientY);
+        });
+        window.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            //console.log(`MouseCanvasPos: ${e.clientX - (window.innerWidth / 2)}, ${e.clientY - (window.innerHeight / 2)}`);
+        });
+        window.addEventListener('keydown', (e) => {
+            if (e.key == 'l'){//collider debug
+                let colls = generateColliders();
+                console.log(colls);
+                console.log(`Colliders as a string:\nMap Size: ${Constants.MAP_SIZE}\n${colls}`);
+                console.log(debugBoxes);
+            }
+            if (e.key == 'p'){//player coords
+                const {me} = getCurrentState();
+                console.log(me.x, me.y);
+            }
+            if (e.key == 'o'){
+                const { me } = getCurrentState();
+                let tempBFA = getBFA();
+                //delete collider mouse collides with
+                let temp = objectBFACollision(mouseX - (window.innerWidth / 2) + me.x, mouseY - (window.innerHeight / 2) + me.y, 50);
+                if (temp.length > 0){
+                    for (let i = 0; i < tempBFA.length; i++){
+                        for (let o = 0; o < temp.length; o++){
+                            if (tempBFA[i] == temp[o]){
+                                console.log('popped');
+                                tempBFA.pop(tempBFA[i]);
+                            }
                         }
                     }
+                    setBFA(tempBFA);
+                    generateDebugBoxes();
                 }
-                setBFA(tempBFA);
-                generateDebugBoxes();
+    
             }
-
-        }
-    });
+        });
+    }
     function objectBFACollision(x, y, radius){
         let whichBox = [];
         for (let i = 0; i < BFA.length; i++){
