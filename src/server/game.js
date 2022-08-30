@@ -269,18 +269,26 @@ class Game{
         }
         if (this.top10.length < 10){
           this.top10.push([username, player.score]);
-          this.top10.sort((a,b)=>a-b)
+          this.top10.sort(this.compareSecondColumn);
         }else{
           for (let i = 0; i < this.top10.length; i++){
             if (player.score > this.top10[i][1]){
               this.top10.splice(i, 1);
               this.top10.push([username, player.score]);
-              this.top10.sort((a,b)=>a-b)
+              this.top10.sort(this.compareSecondColumn);
             }
           }
         }
         console.log(this.top10);
       }
+      compareSecondColumn(a, b) {
+        if (a[1] === b[1]) {
+            return 0;
+        }
+        else {
+            return (a[1] > b[1]) ? -1 : 1;
+        }
+    }
     
       createUpdate(player) {
         const nearbyPlayers = Object.values(this.players).filter(
