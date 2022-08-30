@@ -269,11 +269,27 @@ class Game{
         }
         if (this.top10.length < 10){
           this.top10.push([username, player.score]);
+          this.top10.sort(function(a, b) {
+            if( a === Infinity ) 
+              return 1; 
+            else if( isNaN(a)) 
+              return -1;
+            else 
+              return a - b;
+          });
         }else{
           for (let i = 0; i < this.top10.length; i++){
             if (player.score > this.top10[i][1]){
-              this.top10.pop(this.top10[i]);
+              this.top10.splice(i, 1);
               this.top10.push([username, player.score]);
+              this.top10.sort(function(a, b) {
+                if( a === Infinity ) 
+                  return 1; 
+                else if( isNaN(a)) 
+                  return -1;
+                else 
+                  return a - b;
+              });
             }
           }
         }
