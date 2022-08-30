@@ -4,7 +4,7 @@ module.exports = Object.freeze({
     //Default Map Size => 6400
     MAP_SIZE: 6400, //highly reccommended to also change the map size in order to make drawing colliders much easier
 
-    COLLISION_DIST: 300,
+    COLLISION_DIST: 500,
     //Player
     PLAYER_RADIUS: 32,//32
     PLAYER_MAX_HP: 3,
