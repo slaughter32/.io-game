@@ -209,7 +209,8 @@ function renderPlayer(me, player) {
   );
     //fireball
     let fireImage = 'OrbSpawn.png';
-    context.translate(Math.cos(mouseDir - Math.PI /2) * Constants.IDLE_DIST_FROM_PLAYER, Math.sin(mouseDir - Math.PI/2) * Constants.IDLE_DIST_FROM_PLAYER);
+    let newDir = mouseDir - Math.PI / 2;
+    context.translate(Math.cos(newDir) * Constants.IDLE_DIST_FROM_PLAYER, Math.sin(newDir) * Constants.IDLE_DIST_FROM_PLAYER);
     //firefinder
     //add a 'state' variable: 0=recharging, 1=charged/idle
     if (fireState == 1){
