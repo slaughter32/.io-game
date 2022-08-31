@@ -127,7 +127,7 @@ function resetInput(){
   s = false;
   d = false;
 }
-function windowRezise(event){
+function windowRezise(){
   width = window.innerWidth;
   height = window.innerHeight;
 }
@@ -139,6 +139,7 @@ function windowRezise(event){
 //BOTH
 export function startCapturingInput(){
     resetInput();//prevent movement bugs
+    windowRezise();//movement bug prevention also
     window.addEventListener('resize', windowRezise);//prevent movement bugs when window is resized
     window.addEventListener('mousemove', mouseDirection);
     window.addEventListener('keydown', onKeyDown);
