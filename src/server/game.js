@@ -279,23 +279,13 @@ class Game{
             }
           }
           if (found){
-            removeLowest(this.top10);
+            this.top10.sort(this.compareSecondColumn);
+            this.top10.splice(9, 1);
           }
         }
         
         this.top10.sort(this.compareSecondColumn);
         //console.log(this.top10);
-      }
-      removeLowest(arr){
-        let lowest = 999999;
-        let temp = 0;
-        for (let i = 0; i < arr.length; i++){
-          if (arr[i][1] < lowest){
-            lowest = arr[i][1];
-          }
-          temp = i;
-        }
-        this.top10.splice(temp, 1);
       }
       compareSecondColumn(a, b) {
         if (a[1] === b[1]) {
