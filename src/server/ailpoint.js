@@ -33,8 +33,10 @@ class Ailpoint{
         for (let i = 0; i < players.length; i++){
             //console.log("player xy object xy\n", players[i].x, players[i].y, "\n", this.x, this.y);
             if (collisions.circleCircle(this.x, this.y, players[i].x, players[i].y, this.radius, Constants.PLAYER_RADIUS)){
-                playersInside++;
-                this.currentPlayer = players[i];
+                if (players[i].hp > 0){
+                    playersInside++;
+                    this.currentPlayer = players[i];
+                }
             }
         }
         if (playersInside == 1){

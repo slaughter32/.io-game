@@ -120,7 +120,7 @@ class Game{
         this.timeTillHP -= dt;
         if (Constants.CAPTURE_POINT_REQUIRED_TIME - this.timeSinceLastCap <= 60 && this.serverProfitSinceCap >= Constants.CAPTURE_POINT_REQUIRED_GOLD && this.messageTime == Constants.GLOBAL_MESSAGE_LENGTH && this.oneminmessage){
           this.globalServerMessage = "Capture Point Spawning in 1 Minute";
-          this.fiveminmessage = false;
+          this.oneminmessage = false;
         }
         //set active capture and heal points
         //console.log(this.timeSinceLastCap - Constants.CAPTURE_POINT_REQUIRED_TIME, this.serverProfitSinceCap, this.activeCapturePoints.length);
@@ -280,7 +280,7 @@ class Game{
           }
           if (found){
             this.top10.sort(this.compareSecondColumn);
-            this.top10.splice(9, 1);
+            this.top10.splice(10, 1);
           }
         }
         
