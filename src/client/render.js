@@ -229,6 +229,7 @@ function renderPlayer(me, player) {
         30,
        ); 
     }
+
   context.restore();
 
 
@@ -277,39 +278,6 @@ function renderPlayer(me, player) {
   context.font = `${20 * scale}px Comic Sans MS`;
   context.fillText(me.score, 103 * scale, 63 * scale);
 
-
-  // //fireball
-  // context.save();
-  // let fireImage = 'OrbSpawn.png';
-  // const dir = getDir();
-  // context.translate(Math.cos(dir - Math.PI /2) * Constants.IDLE_DIST_FROM_PLAYER + canvas.width / 2, Math.sin(dir - Math.PI/2) * Constants.IDLE_DIST_FROM_PLAYER + canvas.height / 2);
-  // //firefinder
-  // //add a 'state' variable: 0=recharging, 1=charged/idle
-  // if (fireState == 1){
-  //   fireImage = 'OrbFire.png';
-  // }
-  // context.drawImage(
-  //   getAsset(fireImage),
-  //   30 * (Math.round(fire) - 1),
-  //   0,
-  //   30,
-  //   30,
-  //   -15,
-  //   -15,
-  //   30,
-  //   30,
-  //  );
-  //   //context.rotate(dir);
-  // context.restore();
-
-  //locally we want a cooldown to display for firing, for now that will go in the place of the healthbar for other ships
-  //I now need to pass through server time???
-  //since server calculates I need to judge the amount that this is filled based on server time rather than player time
-  //export a function from the player that does all the math??
-  //get the time from state? Calculation should run on server though to prevent cheating
-
-
-
  }else{
   context.fillStyle = 'white';
   context.fillRect(
@@ -328,15 +296,29 @@ function renderPlayer(me, player) {
  }
 }
 
-function renderBullet(me, bullet) {
-  const { x, y } = bullet;
+function renderBullet(me, bullet) {//needs to rotate the bullet to its original direction, and then draw the correct frame
+  const { x, y, frame, dir } = bullet;
+  const width = 64;
+  const height = 32;
+  context.save();
+  const canvasX = canvas.width / 2 + x - me.x;
+  const canvasY = canvas.height / 2 + y - me.y;
+  context.translate(canvasX, canvasY);
+  //at center, now rotate then translate
+  context.rotate(dir);
+  context.translate(x, y);
   context.drawImage(
-    getAsset('smallfireball.png'),
-    canvas.width / 2 + x - me.x - BULLET_RADIUS,
-    canvas.height / 2 + y - me.y - BULLET_RADIUS,
-    BULLET_RADIUS * 2,
-    BULLET_RADIUS * 2,
+    getAsset('OrbTrail.png'),
+    width * frame,//starting x
+    0,//starting y
+    width,
+    height,
+    0,//center bias x
+    0,//center bias y
+    width,
+    height,
   );
+  context.restore();
 }
 
 function renderCapAndHealPoints(capturepoints, healpoints, me, player){

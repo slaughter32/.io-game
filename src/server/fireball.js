@@ -11,6 +11,7 @@ class Fireball extends ObjectClass{
         this.animationFrame = 0; //6 frames
         this.frames = 5; //0-5 = 6 frames
         this.animationCooldown = 1 / Constants.ANIMATION_FRAMERATE
+        this.dir = dir;
     }
 
     update(dt){
@@ -33,6 +34,7 @@ class Fireball extends ObjectClass{
         return {
             ...(super.serializeForUpdate()),
             animFrame: this.animationFrame,
+            dir: this.dir,
         };
     }
 }

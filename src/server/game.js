@@ -150,7 +150,7 @@ class Game{
           if (activePoint.timeLeft <= 0){
             activePoint.currentPlayer.score += Constants.CAPTURE_POINT_BONUS_GOLD;
             this.globalServerMessage = "Objective Has Been Taken";
-            this.activeCapturePoints.pop();
+            this.activeCapturePoints.splice(i, 1);
             this.serverProfitSinceCap = 0;
             this.timeSinceLastCap = 0;
             this.fiveminmessage = true;
@@ -166,7 +166,8 @@ class Game{
             if (activePoint.currentPlayer.hp < Constants.PLAYER_MAX_HP){
               activePoint.currentPlayer.hp += Constants.HEAL_POINT_AMOUNT;
             }
-            this.healpoints.push(this.activeHealPoints.pop(activePoint));
+            this.healpoints.push(this.activeHealPoints[i]);
+            this.activeHealPoints.splice(i, 1);
           }
         }
         //global server message
