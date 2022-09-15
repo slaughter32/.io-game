@@ -125,7 +125,7 @@ class Game{
         //set active capture and heal points
         //console.log(this.timeSinceLastCap - Constants.CAPTURE_POINT_REQUIRED_TIME, this.serverProfitSinceCap, this.activeCapturePoints.length);
         if (this.timeSinceLastCap >= Constants.CAPTURE_POINT_REQUIRED_TIME && this.serverProfitSinceCap >= Constants.CAPTURE_POINT_REQUIRED_GOLD && this.activeCapturePoints.length <= 0){
-          if (this.lastActiveCP < this.activeCapturePoints.length){
+          if (this.lastActiveCP < this.capturepoints.length){
             this.lastActiveCP++;
           }else{
             this.lastActiveCP = 0;
