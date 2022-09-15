@@ -298,7 +298,7 @@ function renderPlayer(me, player) {
 
 function renderBullet(me, bullet) {//needs to rotate the bullet to its original direction, and then draw the correct frame
   const { x, y, animFrame, dir } = bullet;
-  const width = 80;
+  const width = 64;
   const height = 32;
   context.save();
   context.translate(canvas.width / 2, canvas.height / 2);
@@ -307,8 +307,8 @@ function renderBullet(me, bullet) {//needs to rotate the bullet to its original 
   context.translate(x-me.x, y-me.y);//translate relative to player
   context.rotate(dir + Math.PI/2);
   context.drawImage(
-    getAsset('OrbFire2.png'),
-    width * animFrame,//starting x
+    getAsset('OrbTrail.png'),
+    width * Math.round(animFrame),//starting x
     0,//starting y
     width,
     height,

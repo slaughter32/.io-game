@@ -1,6 +1,6 @@
 //these are global variables, changing them will change how the game operates. Great for tweaking gameplay settings in testing
 module.exports = Object.freeze({
-    COLLISION_EDITOR: true, //change to true to write map colliders (will return an array of collidor coordinates when done)
+    COLLISION_EDITOR: false, //change to true to write map colliders (will return an array of collidor coordinates when done)
     //Default Map Size => 6400
     MAP_SIZE: 6400, //highly reccommended to also change the map size in order to make drawing colliders much easier
 
@@ -17,7 +17,7 @@ module.exports = Object.freeze({
     PLAYER_DASH_DISTANCE: 400,
     //fireball
     BULLET_RADIUS: 10,
-    BULLET_SPEED: 800, //must be different than player speed, even if just by 1... if this becomes a problem for some reason it can be solved but it makes 0 sense to have bullets travel the same speed as the player
+    BULLET_SPEED: 1000, //must be different than player speed, even if just by 1... if this becomes a problem for some reason it can be solved but it makes 0 sense to have bullets travel the same speed as the player
     BULLET_DAMAGE: 1,
     IDLE_DIST_FROM_PLAYER: 48,
     //capture point
