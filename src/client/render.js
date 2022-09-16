@@ -323,11 +323,47 @@ function renderBullet(me, bullet) {//needs to rotate the bullet to its original 
 function renderCapAndHealPoints(capturepoints, healpoints, me, player){
   if (me == player){
     for (let i = 0; i < capturepoints.length; i++){
-      context.fillStyle = "blue";
-      context.beginPath();
-      context.arc(capturepoints[i].x + (canvas.width / 2) - me.x, capturepoints[i].y + (canvas.height / 2) - me.y, capturepoints[i].radius, 0, 2 * Math.PI);
-      context.fill();
-      context.stroke();
+      let curFrame = Math.round(capturepoints[i].frame);
+      //draw the circle under the capture point
+      //draw the capturepoint with correct frame displayed
+      const CPImageWidth = 64;//8 grids
+      const CPImageHeight = 128;//15.5grids
+      let xFrame = ((curFrame - 1) % 8) + 1;
+      let yFrame = Math.ceil(curFrame / 8);
+      let image = 'PointCycle.png';
+      if (!capturepoints[i].onCycle){
+        image = 'PointCaptured.png'
+      }
+      context.save();
+      context.translate(capturepoints[i].x + (canvas.width / 2) - me.x, capturepoints[i].y + (canvas.height / 2) - me.y);
+      context.drawImage(
+        getAsset('CapturepointCircle.png'),
+        0,
+        0,
+        256,
+        256,
+        -128,//xbias
+        -80,//ybias
+        256,
+        256,
+      )
+      context.drawImage(
+        getAsset(image),
+        (xFrame - 1) * CPImageWidth,//starting x
+        (yFrame - 1) * CPImageHeight,//starting y
+        CPImageWidth,
+        CPImageHeight,
+        CPImageWidth / -2,//center bias x
+        CPImageHeight / -2,//center bias y
+        CPImageWidth,
+        CPImageHeight,
+      );
+      context.restore();
+      // context.fillStyle = "blue";
+      // context.beginPath();
+      // context.arc(capturepoints[i].x + (canvas.width / 2) - me.x, capturepoints[i].y + (canvas.height / 2) - me.y, capturepoints[i].radius, 0, 2 * Math.PI);
+      // context.fill();
+      // context.stroke();
       //Capture Point Finder Arrow
       const dx = me.x - capturepoints[i].x;
       const dy = me.y - capturepoints[i].y;
@@ -381,6 +417,7 @@ function renderCapAndHealPoints(capturepoints, healpoints, me, player){
       StringID = StringID.slice(0, -3);//this is a filthy solution, absolutely disgusting.. but it works
       //console.log(StringID);
       if (capturepoints[i].active){
+        context.fillStyle = 'blue';
         //console.log('point id', healpoints[i].currentPlayer.id);
         //console.log(me == healpoints[i].currentPlayer);
         if (StringID == capturepoints[i].currentPlayer.id){

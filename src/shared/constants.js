@@ -24,7 +24,7 @@ module.exports = Object.freeze({
     CAPTURE_TIME: 10,//in seconds
     MAX_ACTIVE: 1,
     CAPTURE_POINT_QUANTITY: 50, //locations for them to spawn
-    CP_CAPTURE_RADIUS: 50,
+    CP_CAPTURE_RADIUS: 75,
     CAPTURE_POINT_BONUS_GOLD: 1000,
     //capture point requirements
     CAPTURE_POINT_REQUIRED_GOLD: 1000, //gold required to have been profited by server (default 2000, lowered in testing to make more fun
