@@ -1,4 +1,4 @@
-const ASSET_NAMES = ['smallfireball.png', 'mainmapio.png', 'hud3hp.png', 'hud2hp.png', 'hud1hp.png', 'CPArrow.png', 'magespritesheetfinal.png', 'WizardDeath.png', 'WizardExtract.png', 'OrbFire.png', 'OrbFire2.png', 'OrbSpawn.png', 'OrbTrail.png', 'PointCycle.png', 'PointCaptured.png', 'CapturepointCircle.png'];
+const ASSET_NAMES = ['smallfireball.png', 'mainmapio.png', 'hud3hp.png', 'hud2hp.png', 'hud1hp.png', 'CPArrow.png', 'magespritesheetfinal.png', 'WizardDeath.png', 'WizardExtract.png', 'OrbFire.png', 'OrbFire2.png', 'OrbSpawn.png', 'OrbTrail.png', 'PointCycle.png', 'PointCaptured.png', 'CapturepointCircle.png', 'Healpointsmall.png'];
 
 const assets = {};
 const downloadPromise = Promise.all(ASSET_NAMES.map(downloadAsset));

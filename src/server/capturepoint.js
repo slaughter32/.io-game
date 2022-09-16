@@ -29,7 +29,6 @@ class CapturePoint extends AilPoint{
                 if (this.frame < 52) {this.frame++;}
                 else{this.frame = 1;}
             }else{//loop through 30 frames, do not reset after as the capture point should dissapear at that point.
-                console.log(this.frame);
                 if (this.frame < 30){this.frame++;}
             }
             this.animationCooldown = 1/Constants.ANIMATION_FRAMERATE;//reset cooldown

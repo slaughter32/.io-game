@@ -137,7 +137,8 @@ class Game{
 
         if (this.activeHealPoints.length < Constants.MAX_HEAL_POINTS && this.timeTillHP <= 0){
           this.timeTillHP = Constants.HEAL_POINT_RESPAWN_TIME;
-          this.activeHealPoints.push(this.healpoints.pop());
+          this.activeHealPoints.push(this.healpoints[0]);
+          this.healpoints.splice(0, 1);
         }
 
         //check the status of active healpoints/capturepoints

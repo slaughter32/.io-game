@@ -440,10 +440,25 @@ function renderCapAndHealPoints(capturepoints, healpoints, me, player){
     for (let i = 0; i < healpoints.length; i++){
       //console.log(healpoints[i]);
       context.fillStyle = "green";
-      context.beginPath();
-      context.arc(healpoints[i].x + (canvas.width / 2) - me.x, healpoints[i].y + (canvas.height / 2) - me.y, healpoints[i].radius, 0, 2 * Math.PI);
-      context.fill();
-      context.stroke();
+      const HPImageWidth = 48;
+      const HPImageHeight = 48;
+      context.save();
+      context.translate(healpoints[i].x + (canvas.width / 2) - me.x, healpoints[i].y + (canvas.height / 2) - me.y);
+      let frame = Math.round(healpoints[i].frame);
+      let xFrame = ((frame - 1) % 8) + 1;
+      let yFrame = Math.ceil(frame / 8);
+      context.drawImage(
+        getAsset('Healpointsmall.png'),
+        (xFrame - 1) * HPImageWidth,//starting x
+        (yFrame - 1) * HPImageHeight,//starting y
+        HPImageWidth,
+        HPImageHeight,
+        HPImageWidth / -2,//center bias x
+        HPImageHeight / -2,//center bias y
+        HPImageWidth,
+        HPImageHeight,
+      );
+      context.restore();
       //capture progress bar
       //console.log(healpoints[i]);
       let StringID = me.id;
